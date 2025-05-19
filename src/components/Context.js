@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 const AppContext = React.createContext();
 let apiKey = process.env.REACT_APP_API_KEY;
 
-export const url = `https://www.omdbapi.com/?apikey=${apiKey}`
+export const url = `https:/www.omdbapi.com/?apikey=${apiKey}`
 
 const AppProvider = ({ children }) => {
     const [movie, setMovie] = useState([])
