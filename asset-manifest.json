@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/couch-critic/static/css/main.afcb6928.css",
-    "main.js": "/couch-critic/static/js/main.e6b5405f.js",
+    "main.js": "/couch-critic/static/js/main.388015da.js",
     "static/js/453.21d0343d.chunk.js": "/couch-critic/static/js/453.21d0343d.chunk.js",
     "static/media/slick.svg": "/couch-critic/static/media/slick.2630a3e3eab21c607e21.svg",
     "static/media/slick.eot": "/couch-critic/static/media/slick.a4e97f5a2a64f0ab1323.eot",
@@ -9,11 +9,11 @@
     "static/media/slick.woff": "/couch-critic/static/media/slick.295183786cd8a1389865.woff",
     "index.html": "/couch-critic/index.html",
     "main.afcb6928.css.map": "/couch-critic/static/css/main.afcb6928.css.map",
-    "main.e6b5405f.js.map": "/couch-critic/static/js/main.e6b5405f.js.map",
+    "main.388015da.js.map": "/couch-critic/static/js/main.388015da.js.map",
     "453.21d0343d.chunk.js.map": "/couch-critic/static/js/453.21d0343d.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.afcb6928.css",
-    "static/js/main.e6b5405f.js"
+    "static/js/main.388015da.js"
   ]
 }
