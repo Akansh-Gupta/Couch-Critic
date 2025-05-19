@@ -2,8 +2,7 @@ import './App.css';
 import {
   BrowserRouter as Router,
   Routes,
-  Route,
-  Navigate
+  Route
 } from 'react-router-dom';
 import SingleMovie from './components/SingleMovie'
 import SingleSeries from './components/SingleSeries';
@@ -27,7 +26,6 @@ function App() {
         />
         <NavBar/>
         <Routes>
-          <Route path="/couch-critic" element={<Navigate to="/" />} />
           <Route exact path="/" element={<Home/>} />
           <Route exact path="/movies" element={<Movies/>} />
           <Route exact path="/series" element={<Series />} />

@@ -129,7 +129,7 @@ export default function Home() {
         return (
             <div className='movie-section'>
                 <div className='loading'>
-                    <img src="images/logo/loading.gif" alt="" /> <br />
+                    <img src="/images/logo/loading.gif" alt="" /> <br />
                     Loading...
                 </div>
             </div>
