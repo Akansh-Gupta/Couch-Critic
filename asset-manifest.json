@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/Couch-Critic/static/css/main.4f054e71.css",
-    "main.js": "/Couch-Critic/static/js/main.b18254c8.js",
+    "main.js": "/Couch-Critic/static/js/main.115e9b95.js",
     "static/js/453.21d0343d.chunk.js": "/Couch-Critic/static/js/453.21d0343d.chunk.js",
     "static/media/slick.svg": "/Couch-Critic/static/media/slick.2630a3e3eab21c607e21.svg",
     "static/media/slick.eot": "/Couch-Critic/static/media/slick.a4e97f5a2a64f0ab1323.eot",
@@ -9,11 +9,11 @@
     "static/media/slick.woff": "/Couch-Critic/static/media/slick.295183786cd8a1389865.woff",
     "index.html": "/Couch-Critic/index.html",
     "main.4f054e71.css.map": "/Couch-Critic/static/css/main.4f054e71.css.map",
-    "main.b18254c8.js.map": "/Couch-Critic/static/js/main.b18254c8.js.map",
+    "main.115e9b95.js.map": "/Couch-Critic/static/js/main.115e9b95.js.map",
     "453.21d0343d.chunk.js.map": "/Couch-Critic/static/js/453.21d0343d.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.4f054e71.css",
-    "static/js/main.b18254c8.js"
+    "static/js/main.115e9b95.js"
   ]
 }
