@@ -20,7 +20,6 @@ export default function Home() {
             const res = await fetch(url)
             setLoadingProgress(30)
             const data = await res.json()
-            console.log(data)
             setLoadingProgress(60)
             if (data.Response === "True") {
                 setMovie1(data.Search)
@@ -36,7 +35,6 @@ export default function Home() {
             const res = await fetch(url)
             setLoadingProgress(30)
             const data = await res.json()
-            console.log(data)
             setLoadingProgress(60)
             if (data.Response === "True") {
                 setMovie2(data.Search)
@@ -52,7 +50,6 @@ export default function Home() {
             const res = await fetch(url)
             setLoadingProgress(30)
             const data = await res.json()
-            console.log(data)
             setLoadingProgress(60)
             if (data.Response === "True") {
                 setMovie3(data.Search)
@@ -68,7 +65,6 @@ export default function Home() {
             const res = await fetch(url)
             setLoadingProgress(30)
             const data = await res.json()
-            console.log(data)
             setLoadingProgress(60)
             if (data.Response === "True") {
                 setMovie4(data.Search)
@@ -84,7 +80,6 @@ export default function Home() {
             const res = await fetch(url)
             setLoadingProgress(30)
             const data = await res.json()
-            console.log(data)
             setLoadingProgress(60)
             if (data.Response === "True") {
                 setMovie5(data.Search)
@@ -101,7 +96,6 @@ export default function Home() {
             const res = await fetch(url)
             setLoadingProgress(30)
             const data = await res.json()
-            console.log(data)
             setLoadingProgress(60)
             if (data.Response === "True") {
                 setIsLoading(false)
