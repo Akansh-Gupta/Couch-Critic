@@ -123,7 +123,7 @@ export default function Home() {
         return (
             <div className='movie-section'>
                 <div className='loading'>
-                    <img src={`${process.env.PUBLIC_URL}/images/logo/loading.gif"`} alt="" /> <br />
+                    <img src={`${process.env.PUBLIC_URL}/images/logo/loading.gif`} alt="" /> <br />
                     Loading...
                 </div>
             </div>
