@@ -15,7 +15,6 @@ export default function SingleMovie() {
       const res = await fetch(url)
       setLoadingProgress(30)
       const data = await res.json()
-      console.log(data)
       setLoadingProgress(60)
       if (data.Response === "True") {
         setIsLoading(false)
