@@ -38,7 +38,7 @@ export default function SingleMovie() {
         return (
             <div className='movie-section'>
                 <div className='loading'>
-                    <img src="/images/logo/loading.gif" alt="" />
+                    <img src={`${process.env.PUBLIC_URL}/images/logo/loading.gif`} alt="" />
                     Loading...
                 </div>
             </div>
@@ -51,15 +51,15 @@ export default function SingleMovie() {
                 <div className="movie-poster">
                     <img className='poster-img' src={movie.Poster} alt="movie poster" />
                     <ul className="rating-info">
-                        <li><img src='/images/logo/imdb.png' className='icon' alt='' /><b> IMDB Rating:</b> <img src="/images/logo/star.png" alt="" style={{ width: "20px", aspectRatio: "1", marginBottom: "4px" }} /> {movie.imdbRating} </li>
-                        <li><img src="/images/logo/imdb.png" className='icon' alt="" /> <b>IMDB Votes:</b> <img src="/images/logo/like.png" alt="" style={{ width: "20px", aspectRatio: "1", marginBottom: "4px" }} />  {movie.imdbVotes} </li>
+                        <li><img src={`${process.env.PUBLIC_URL}/images/logo/imdb.png`} className='icon' alt='' /><b> IMDB Rating:</b> <img src={`${process.env.PUBLIC_URL}/images/logo/star.png`} alt="" style={{ width: "20px", aspectRatio: "1", marginBottom: "4px" }} /> {movie.imdbRating} </li>
+                        <li><img src={`${process.env.PUBLIC_URL}/images/logo/imdb.png`} className='icon' alt="" /> <b>IMDB Votes:</b> <img src={`${process.env.PUBLIC_URL}/images/logo/like.png`} alt="" style={{ width: "20px", aspectRatio: "1", marginBottom: "4px" }} />  {movie.imdbVotes} </li>
                     </ul>
                 </div>
                 <div className="movie-info">
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
                         <h3 className="movie-title">{movie.Title}</h3>
                         <NavLink to="/series">
-                            <img src="/images/close.png" alt="close button" className="closeBtn" />
+                            <img src={`${process.env.PUBLIC_URL}/images/close.png`} alt="close button" className="closeBtn" />
                         </NavLink>
                     </div>
                     <ul className="movie-misc-info">
@@ -71,7 +71,7 @@ export default function SingleMovie() {
                     <p className="genre"><b>Genre:</b> {movie.Genre} <br /> <b>Total Seasons:</b> {movie.totalSeasons} </p>
                     <p className="actors"><b>Actors: </b>{movie.Actors}</p>
                     <p className="plot"><b>Synopsis:</b> {movie.Plot}</p>
-                    <p className="awards"><b>Nominations and Awards: <img src="/images/logo/trophy.png" alt="" className="icon" style={{ width: "30px" }} /></b> {movie.Awards} </p>
+                    <p className="awards"><b>Nominations and Awards: <img src={`${process.env.PUBLIC_URL}/images/logo/trophy.png`} alt="" className="icon" style={{ width: "30px" }} /></b> {movie.Awards} </p>
                 </div>
             </div>
         </>

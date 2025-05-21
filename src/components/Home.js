@@ -118,7 +118,7 @@ export default function Home() {
             getMovies1(`${url}&s=mission impossible`);
             getMovies2(`${url}&s=star wars`);
             getMovies3(`${url}&s=harry potter`);
-            getMovies4(`${url}&s=fast `);
+            getMovies4(`${url}&s=fast`);
             getMovies5(`${url}&s=batman`);
             getMovies6(`${url}&s=despicable me`);
         }, 500);
@@ -129,7 +129,7 @@ export default function Home() {
         return (
             <div className='movie-section'>
                 <div className='loading'>
-                    <img src="/images/logo/loading.gif" alt="" /> <br />
+                    <img src={`${process.env.PUBLIC_URL}/images/logo/loading.gif"`} alt="" /> <br />
                     Loading...
                 </div>
             </div>

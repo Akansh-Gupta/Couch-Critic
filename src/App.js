@@ -19,7 +19,7 @@ function App() {
   
   return ( 
     <>
-      <Router>
+      <Router basename='/Couch-Critic'>
         <LoadingBar
           color='#ff3700'
           progress={progress}
@@ -27,7 +27,7 @@ function App() {
         />
         <NavBar/>
         <Routes>
-          <Route path="/couch-critic" element={<Navigate to="/" />} />
+          <Route path="/Couch-Critic" element={<Navigate to="/" />} />
           <Route exact path="/" element={<Home/>} />
           <Route exact path="/movies" element={<Movies/>} />
           <Route exact path="/series" element={<Series />} />

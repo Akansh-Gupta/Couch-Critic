@@ -12,12 +12,13 @@ export default function Search() {
           onSubmit={(e) => e.preventDefault()}
           value={query}
           onChange={(e) => {
-            setQuery(e.target.value)
-          }} 
-          />
+            setQuery(e.target.value);
+          }}
+          onDragStart={e => e.stopPropagation()}
+        />
       </div>
       <div>
-          <p className='error'>{isError.show && isError.msg}</p>
+        <p className='error'>{isError.show && isError.msg}</p>
       </div>
     </>
   )

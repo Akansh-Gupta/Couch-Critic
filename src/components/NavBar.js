@@ -30,7 +30,7 @@ export default function NavBar() {
                         </ul>
                     </li> */}
                 </ul>
-                <NavLink to="/movies"><Search /></NavLink>
+                <NavLink to="/movies" draggable={false}><Search /></NavLink>
             </div>
         </div>
     )
