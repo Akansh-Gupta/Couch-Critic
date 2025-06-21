@@ -1,5 +1,6 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { Link } from 'react-router-dom'
+import axios from "axios";
 const AppContext = React.createContext();
 let apiKey = process.env.REACT_APP_API_KEY;
 
@@ -7,25 +8,23 @@ export const url = `https://www.omdbapi.com/?apikey=${apiKey}`
 
 const AppProvider = ({ children }) => {
     const [movie, setMovie] = useState([])
-    const [isError, setIsError] = useState({ show: "false", msg: "" })
+    const [isError, setIsError] = useState({ show: false, msg: "" })
     const [query, setQuery] = useState("avengers")
     const [progress, setProgress] = useState(0)
-    const [login, setLogin] = useState("")
-    const [pass, setPass] = useState("")
 
     const fetchMovie = (movieType) => {
         return (
             <>
-                <h2>Recently Searched {movieType.charAt(0).toUpperCase() + movieType.slice(1)}:</h2> <hr />
-                <section className='cardContainer'>
+                <div className="heading">Recently Searched {movieType.charAt(0).toUpperCase() + movieType.slice(1)}</div> <hr />
+                <section className='cardContainer' style={{ flexWrap: "wrap", justifyContent: "start", margin: "0 110px" }}>
                     {movie.map((curMovie) => {
                         const { imdbID, Title, Poster, Type, Year } = curMovie
                         const movieName = Title.substring(0, 24)
                         if (Type === movieType && Poster !== "N/A") {
                             return (
                                 <div className="cardItem" key={imdbID}>
-                                    <Link to={`/${Type}/${imdbID}`} >
-                                        <img src={Poster} className="cardImg" alt='' />
+                                    <Link to={`/${Type}/${imdbID}`} draggable={false}>
+                                        <img src={Poster} className="cardImg" alt='' style={{ background: `url(${process.env.PUBLIC_URL}/images/image-not-found.png)`, backgroundSize: "cover" }} />
                                     </Link>
                                     <div className="cardBody">
                                         <h6>{movieName.length > 23 ? `${movieName}...` : movieName}</h6>
@@ -35,6 +34,7 @@ const AppProvider = ({ children }) => {
                                 </div>
                             )
                         }
+                        return null;
                     })}
                 </section>
             </>
@@ -42,15 +42,16 @@ const AppProvider = ({ children }) => {
     }
 
 
-    const setLoadingProgress = (progress) => {
-        setProgress(progress)
-    }
+    const setLoadingProgress = useCallback((progress) => {
+        setProgress(progress);
+    }, []);
 
-    const getMovies = async (url) => {
+    const getMovies = useCallback(async (url) => {
         try {
-            const res = await fetch(url)
-            const data = await res.json()
+            const res = await axios.get(url)
+            const data = await res.data
             if (data.Response === "True") {
+                // console.log(data)
                 setLoadingProgress(10)
                 setTimeout(() => {
                     setLoadingProgress(30)
@@ -82,21 +83,21 @@ const AppProvider = ({ children }) => {
         } catch (error) {
             console.log(error)
         }
-    }
+    }, [setLoadingProgress]);
 
     useEffect(() => {
         let timerOut = setTimeout(() => {
             getMovies(`${url}&s=${query}`);
         }, 500);
         return () => clearTimeout(timerOut)
-    }, [query])
+    }, [query, getMovies]);
 
-    return (<AppContext.Provider value={{ isError, movie, setQuery, progress, setProgress, setLoadingProgress, fetchMovie, login, setLogin, pass, setPass }}>
-        {children}
-    </AppContext.Provider>
+    return (
+        <AppContext.Provider value={{ isError, movie, setQuery, progress, setProgress, setLoadingProgress, fetchMovie }}>
+            {children}
+        </AppContext.Provider>
     )
 };
-
 const useGlobalContext = () => {
     return useContext(AppContext)
 }

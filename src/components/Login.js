@@ -1,36 +1,62 @@
-import React from 'react'
-import { useGlobalContext } from './Context';
+import { useAuth0 } from '@auth0/auth0-react'
+import axios from 'axios';
+import { useCallback, useEffect } from 'react';
+
 
 export default function Login() {
-    const { login, setLogin, pass, setPass } = useGlobalContext()
-    const handleLogin = () => {
-        if(login === "akansh" && pass === "couch critic"){
-            alert("Login Successful")
+    const { loginWithRedirect, logout, isAuthenticated, user, getAccessTokenSilently } = useAuth0();
+    const getToken = useCallback(async () => {
+        try {
+            const token = await getAccessTokenSilently();
+            console.log("Access Token:", token);
+            const response = await axios.get('http://localhost:4000/protected', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            console.log("Protected Route Response:", response.data);
         }
-        else{
-            alert("Wrong Credentials")
+        catch (error) {
+            console.error("Error getting access token:", error);
         }
-    }
-    return (
-        <div className='form-page'>
-            <div className="f-container" id="container">
-                <div className="form-container sign-in">
-                    <h1>Sign In</h1>
-                    <span>Use your email password</span>
-                        <input type="text" placeholder="Username" onChane={(e) => setLogin(e.target.value)} />
-                        <input type="password" placeholder="Password" onChnge={(e) => setPass(e.target.value)} />
-                        <button >Sign In</button>
-                </div>
-                <div className="toggle-container">
-                    <div className="toggle">
+    },[getAccessTokenSilently])
 
-                        <div className="toggle-panel toggle-right">
-                            <h1>Olá amigo!</h1>
-                            <p>Sign In with your personal details to use all of site features</p>
+    useEffect(() => {
+        if (isAuthenticated) {
+            getToken();
+            console.log(user);
+        } else {
+            console.log("not authenticated");
+        }
+    }, [isAuthenticated, user, getToken]);
+    return (
+        <>
+            {isAuthenticated ?
+                <div className="nav-item dropdown">
+                    <div className="nav-link dropdown-toggle d-flex" style={{ gap: '5px' }} id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img className='userimg' src={user?.picture} alt="" referrerPolicy="no-referrer" onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || "User")}&background=0D8ABC&color=fff`;;
+                        }} />
+                        <div className='username'>Hello, {user?.sub?.startsWith("google-oauth2|")
+                            ? (
+                                user.name?.length > 15
+                                    ? user.name.substring(0, 16) + '...'
+                                    : user.name
+                            )
+                            : (
+                                user?.["https://couch-critic/username"]
+                                    ? user["https://couch-critic/username"]
+                                    : user?.email?.split("@")[0]
+                            )}
                         </div>
                     </div>
+                    <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><button className='loginbtn' onClick={() => logout({ returnTo: window.location.origin })}>Logout</button> </li>
+                    </ul>
                 </div>
-            </div>
-        </div>
+                :
+                <button className='loginbtn' onClick={() => loginWithRedirect({appState: { returnTo: window.location.pathname }})}>Login</button>}
+        </>
     )
 }
