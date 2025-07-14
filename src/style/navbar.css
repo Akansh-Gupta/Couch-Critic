@@ -1,0 +1,77 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  line-height: 2.5rem !important;
+  display: flex;
+  justify-content: space-between;
+  transition: 0.5s;
+  align-items: center;
+  padding: 20px 30px;
+  z-index: 10;
+}
+
+.header-bg {
+  background-color: #000000;
+  border-radius: 0 0 15px 15px;
+  border-bottom: 1px solid white;
+}
+
+.logo {
+  font-size: 35px;
+  color: white;
+  letter-spacing: 1px;
+  font-weight: 700;
+}
+
+.nav {
+  display: flex;
+  max-width: 100%;
+  justify-content: center;
+}
+
+.nav li {
+  list-style: none;
+  margin: 0 10px;
+}
+
+.nav li .listItem {
+  padding: 0.5rem;
+  color: white;
+  border-radius: 0.25rem;
+  text-decoration: none;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: 0.3s ease-in-out;
+}
+
+.nav li .listItem:hover {
+  color: var(--primary) !important;
+}
+
+.nav li .listItem.active {
+  color: var(--primary);
+}
+
+.nav li .listitem {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.home-nav {
+  width: 100%;
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  margin: 2rem 0;
+}
+
+.home-nav .listItem {
+  color: white;
+  list-style: none;
+  font-size: 1.5rem;
+  font-weight: 500;
+}

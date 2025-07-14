@@ -1,0 +1,6 @@
+.comment-section {
+    /* margin: 2rem 5rem; */
+    padding: 1rem;
+    background-color: var(--light-dark-color);
+    border-radius: 1rem;
+}

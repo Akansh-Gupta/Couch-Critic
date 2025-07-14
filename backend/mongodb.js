@@ -3,8 +3,9 @@ const { MongoClient } = require('mongodb');
 const client = new MongoClient(process.env.MONGO_URL);
 
 let db;
-console.log("MONGO_URL:", process.env.MONGO_URL);
+// console.log("MONGO_URL:", process.env.MONGO_URL);
 async function connectToMongoDB() {
+    if (db) return db;
     try {
         await client.connect();
         db = client.db('CouchCritic');

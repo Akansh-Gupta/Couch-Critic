@@ -1,0 +1,25 @@
+.load-more-wrapper {
+    text-align: center;
+    margin: 1.5rem 0;
+}
+
+.load-more-btn {
+    padding: 0.5rem 1rem;
+    font-size: 1.25rem;
+    font-weight: 500;
+    background-color: var(--primary);
+    color: white;
+    border: 3px solid var(--primary);
+    border-radius: 1rem;
+    cursor: pointer;
+}
+
+.load-more-btn:hover{
+    border: 3px solid white;
+}
+
+.load-more-btn:focus{
+    background-color: var(--primary);
+    color: white;
+    border: 3px solid white;
+}
