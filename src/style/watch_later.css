@@ -1,79 +1,47 @@
-.watch-later-btn {
-    border: 2px solid white;
-    border-radius: 1rem;
-    width: 100%;
-    height: clamp(28px, 3.5vw, 42px);
-    font-size: clamp(0.65rem, 1.2vw, 1.1rem);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: clamp(3px, 0.5vw, 8px);
-    padding: clamp(4px, 0.6vw, 8px);
-    margin: clamp(4px, 0.5vw, 8px) 0;
-    background: white;
-    white-space: nowrap;
-    overflow: hidden;
+.watch-later-bookmark {
+  position: absolute;
+  top: 0;
+  right: clamp(6px, 1.5vw, 14px);
+  z-index: 10;
 }
 
-.watch-later-btn:focus {
-    background-color: white;
-    color: black;
+.bookmark-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: block;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6));
+  transition: transform 0.2s ease;
 }
 
-.watch-later-btn:hover {
-    border: 2px solid var(--primary);
+.bookmark-btn:hover {
+  transform: scale(1.1);
 }
 
-.watch-later-btn .icon {
-    transition: transform 0.4s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
+.bookmark-icon {
+  width: clamp(22px, 3vw, 36px);
+  height: clamp(28px, 4vw, 46px);
+  fill: rgba(255, 255, 255, 0.25);
+  stroke: white;
+  stroke-width: 1.5;
+  transition: fill 0.3s ease, stroke 0.3s ease;
 }
 
-.watch-later-btn .icon svg {
-    width: clamp(10px, 1.4vw, 18px);
-    height: clamp(10px, 1.4vw, 18px);
+.bookmark-btn.added .bookmark-icon {
+  background-color: transparent !important;
+  fill: var(--primary);
+  stroke: var(--primary);
 }
 
-.watch-later-btn.added .icon {
-    transform-origin: center;
-    transform: rotate(360deg);
-}
-
-.watch-later-btn .icon-text {
-    font-size: clamp(0.55rem, 1vw, 1rem);
-    font-weight: 600;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+.bookmark-btn:hover .bookmark-icon {
+  fill: rgba(255, 83, 35, 0.5);
+  stroke: var(--primary);
 }
 
 @media (max-width: 480px) {
-    .watch-later-btn {
-        height: 26px;
-        border-radius: 0.6rem;
-    }
-
-    .watch-later-btn .icon svg {
-        width: 10px;
-        height: 10px;
-    }
-
-    .watch-later-btn .icon-text {
-        font-size: 0.52rem;
-    }
-}
-
-@media (min-width: 481px) and (max-width: 860px) {
-    .watch-later-btn {
-        height: 30px;
-    }
-
-    .watch-later-btn .icon-text {
-        font-size: 0.62rem;
-    }
+  .bookmark-icon {
+    width: 20px;
+    height: 26px;
+  }
 }

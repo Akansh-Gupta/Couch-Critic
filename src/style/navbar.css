@@ -127,6 +127,16 @@
     display: block;
 }
 
+@media (max-width: 860px) {
+    .mobile-login {
+        display: block;
+    }
+
+    .desktop-login {
+        display: none;
+    }
+}
+
 /* Hamburger breakpoint — 860px */
 @media (max-width: 860px) {
   .hamburger {
@@ -158,12 +168,4 @@
     padding: 0.5rem 1rem;
     letter-spacing: 1px;
   }
-
-  .mobile-login {
-        display: block;
-    }
-
-    .desktop-login {
-        display: none;
-    }
 }

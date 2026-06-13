@@ -29,7 +29,7 @@ export default function CardItem({ item, compact, itemType, itemId, itemName, ur
     const votes = ratings?.mal?.votes || ratings?.imdb?.votes || ratings?.simkl?.votes;
     const itemRank = ratings?.mal?.rank || rank;
     const infoClass = compact ? 'cardInfo compact' : 'cardInfo';
-    const watchLaterClass = watchLater ? '' : 'hidden';
+    const watchLaterClass = (watchLater && !compact) ? '' : 'hidden';
     const ratingClass = showRating ? 'rating' : 'rating hidden';
 
     itemType = itemType === 'movie' ? 'movies' : itemType;
@@ -48,6 +48,11 @@ export default function CardItem({ item, compact, itemType, itemId, itemName, ur
                             alt="Poster"
                         />
                     </Link>
+                    {!compact && watchLater && (
+                        <div className="watch-later-bookmark">
+                            <WatchLaterButton />
+                        </div>
+                    )}
                 </div>
                 <div className="cardBody">
                     <div className='cardTitle'>
@@ -79,10 +84,6 @@ export default function CardItem({ item, compact, itemType, itemId, itemName, ur
                         {anime_type && <li><b>Type :</b> {anime_type.charAt(0).toUpperCase() + anime_type.slice(1)}</li>}
                         {itemRank !== undefined && <li><b>Rank :</b> {itemRank === null ? "N/A" : itemRank}</li>}
                         {status && <li><b>Status :</b> {status.charAt(0).toUpperCase() + status.slice(1)}</li>}
-
-                        <div className={watchLaterClass}>
-                            <WatchLaterButton />
-                        </div>
                     </ul>
                 </div>
             </div>
