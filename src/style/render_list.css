@@ -1,24 +1,26 @@
 .load-more-wrapper {
     text-align: center;
     margin: 1.5rem 0;
+    padding: 0 1rem;
 }
 
 .load-more-btn {
-    padding: 0.5rem 1rem;
-    font-size: 1.25rem;
+    padding: 0.5rem 1.5rem;
+    font-size: clamp(1rem, 2vw, 1.25rem);
     font-weight: 500;
     background-color: var(--primary);
     color: white;
     border: 3px solid var(--primary);
     border-radius: 1rem;
     cursor: pointer;
+    transition: all 0.3s;
 }
 
-.load-more-btn:hover{
+.load-more-btn:hover {
     border: 3px solid white;
 }
 
-.load-more-btn:focus{
+.load-more-btn:focus {
     background-color: var(--primary);
     color: white;
     border: 3px solid white;

@@ -15,60 +15,34 @@
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 2;
+  padding: 0 1rem;
 }
 
 .title h1 {
-  font-size: clamp(4rem, 3vw, 3.5rem);
+  font-size: clamp(2rem, 6vw, 4rem);
   letter-spacing: 2px;
   color: white;
-  /* -webkit-text-stroke: 2px white;
-  -webkit-text-fill-color: transparent;
-  background-clip: text; */
   text-align: center;
   text-transform: uppercase;
 }
 
-.blob:nth-child(1) {
-  --angle-delay: 0s;
-  --moving-delay: 0s;
-  --color: rgba(255, 57, 106, 0.8);
-}
+.blob:nth-child(1) { --angle-delay: 0s;   --moving-delay: 0s;  --color: rgba(255, 57, 106, 0.8); }
+.blob:nth-child(2) { --angle-delay: -3s;  --moving-delay: -2s; --color: rgba(255, 128, 77, 0.8); }
+.blob:nth-child(3) { --angle-delay: -6s;  --moving-delay: -4s; --color: rgba(255, 191, 73, 0.8); }
+.blob:nth-child(4) { --angle-delay: -9s;  --moving-delay: -6s; --color: rgba(0, 87, 226, 0.8); }
+.blob:nth-child(5) { --angle-delay: -12s; --moving-delay: -8s; --color: rgba(122, 17, 175, 0.8); }
 
-.blob:nth-child(2) {
-  --angle-delay: -3s;
-  --moving-delay: -2s;
-  --color: rgba(255, 128, 77, 0.8);
-}
-
-.blob:nth-child(3) {
-  --angle-delay: -6s;
-  --moving-delay: -4s;
-  --color: rgba(255, 191, 73, 0.8);
-}
-
-.blob:nth-child(4) {
-  --angle-delay: -9s;
-  --moving-delay: -6s;
-  --color: rgba(0, 87, 226, 0.8);
-}
-
-.blob:nth-child(5) {
-  --angle-delay: -12s;
-  --moving-delay: -8s;
-  --color: rgba(122, 17, 175, 0.8);
-}
-
-.blob{
+.blob {
   position: absolute;
   justify-content: center;
   align-items: center;
   animation: angle 15s var(--angle-delay) infinite linear;
 }
 
-.blob::after{
+.blob::after {
   content: "";
   position: absolute;
-  width: 200px;
+  width: clamp(80px, 15vw, 200px);
   aspect-ratio: 1/1;
   border-radius: 50%;
   background-color: var(--color);
@@ -77,24 +51,11 @@
 }
 
 @keyframes angle {
-  from{
-    transform: rotate(1deg);
-  }
-  to{
-    transform: rotate(360deg);
-  }
-}
-@keyframes moving {
-  from{
-    transform: translate(-50%, -150%);
-  }
-  to{
-    transform: translate(-50%, 50%);
-  }
+  from { transform: rotate(1deg); }
+  to   { transform: rotate(360deg); }
 }
 
-@media (max-width:600px) {
-  .blob::after{
-    width: 120px;
-  }
+@keyframes moving {
+  from { transform: translate(-50%, -150%); }
+  to   { transform: translate(-50%, 50%); }
 }

@@ -1,6 +1,25 @@
 .comment-section {
-    /* margin: 2rem 5rem; */
     padding: 1rem;
     background-color: var(--light-dark-color);
     border-radius: 1rem;
+    width: 100%;
+}
+
+.comment-section label {
+    font-size: clamp(1.5rem, 4vw, 3rem);
+}
+
+.comment-section textarea {
+    width: 100%;
+    font-size: clamp(0.85rem, 1.5vw, 1.125rem);
+}
+
+.login-required {
+    color: white;
+    font-size: clamp(0.9rem, 2vw, 1.125rem);
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
 }
