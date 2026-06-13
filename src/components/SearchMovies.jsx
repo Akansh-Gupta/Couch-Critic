@@ -1,11 +1,17 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useGlobalContext } from './Context';
 import { NavLink } from 'react-router-dom';
 import RenderList from './RenderList';
 
 export default function SearchMovies() {
-    const { query, fetchInformation, movie } = useGlobalContext();
-
+    const { query, movie, fetchInformation } = useGlobalContext();
+    // useEffect(() => {
+    //     if (!query) return;
+    //     const timer = setTimeout(() => {
+    //         fetchMovieAndTv("movie", query)
+    //     }, 1000);
+    //     return () => clearTimeout(timer);
+    // }, [query, fetchMovieAndTv]);
     useEffect(() => {
         if (!query) return;
         const timer = setTimeout(() => {
@@ -22,7 +28,7 @@ export default function SearchMovies() {
                 <li><NavLink to="/search-anime" className="listItem listitem">Anime</NavLink></li>
             </ul>
             <hr />
-            <RenderList list={movie} noResult={true} type="movies" compact={false} showMore={false}/>
+            <RenderList list={movie} noResult={true} type="movies" showMore={false} />
         </div>
     );
 }

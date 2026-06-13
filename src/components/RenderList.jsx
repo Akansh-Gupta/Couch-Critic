@@ -2,14 +2,14 @@ import { useState, useEffect } from 'react';
 import CardItem from './CardItem';
 
 export default function RenderList({
-    // id = "",
     list = [],
     type = "",
     noResult = false,
     compact = true,
-    // filterPremiere = false,
+    filterPremiere = false,
     showMore = true,
-    watchLater = true
+    watchLater = true,
+    showRating = true
 }) {
     const [visibleCount, setVisibleCount] = useState(showMore ? 18 : list.length);
 
@@ -17,11 +17,11 @@ export default function RenderList({
         setVisibleCount(showMore ? 18 : list.length);
     }, [list, showMore]);
 
-    // let filteredList = filterPremiere
-    //     ? list.filter(item => item.status === "premiere")
-    //     : list;
+    let filteredList = filterPremiere
+        ? list.filter(item => item.status === "premiere")
+        : list;
 
-    const posterList = list.filter(item => item.poster);
+    const posterList = filteredList.filter(item => item.poster);
 
     const visibleList = showMore
         ? posterList.slice(0, visibleCount)
@@ -45,6 +45,7 @@ export default function RenderList({
                         url={curItem.url}
                         compact={compact}
                         watchLater={watchLater}
+                        showRating = {showRating}
                     />
                 ))}
             </section>

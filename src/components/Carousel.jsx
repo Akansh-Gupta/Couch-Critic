@@ -20,21 +20,23 @@ export default function Carousel(props) {
     return (
         <Slider {...settings}>
             {list?.slice(0, 10).map((item) => {
-                const rating = item.ratings.imdb?.rating || item.ratings.mal?.rating || item.ratings.simkl?.rating.toFixed(1);
+                const rating = item.ratings.imdb?.rating || item.ratings.mal?.rating || item.ratings.simkl?.rating.toFixed(1) || "N/A";
                 return <Link
                     key={item.ids.simkl_id}
                     draggable={false} to={item.url.replace("movie", "movies")}>
-                    <div className="banner" style={{ backgroundImage: `url(https://simkl.in/posters/${item.poster}_w.webp)` }} >
+                    <div className="banner" style={{ backgroundImage: `url(https://simkl.in/posters/${item.poster}_c.webp)` }} >
                         <div className="content active">
                             <img src={`https://simkl.in/posters/${item.poster}_m.webp`} alt="" className="carousel-movie-img" />
                             {/* <h3 className='banner-title'>{item.title.length > 61 ? item.title.slice(0, 60) + "..." : item.title}</h3> */}
-                            <h4>
-                                <span><i><FaStar className='mb-1' size={25} color='#ffc107' /> {rating}</i></span>
-                                <span>{item.runtime?.replace('h', 'Hr').replace('m', 'Min')}</span>
-                                <span>{item.genres.join(" | ")}</span>
-                                <span>{item.metadata.replace(/(\d{4})\s*-\s*(?=\s*•)/, '$1 - NOW').replaceAll("•"," | ")}</span>
-                            </h4>
-                            <p>{item.overview.length > 351 ? item.overview.slice(0, 350) + "..." : item.overview}</p>
+                            <div>
+                                <h4>
+                                    <span><i><FaStar className='mb-1' size={25} color='#ffc107' /> {rating}</i></span>
+                                    <span>{item.runtime?.replace('h', 'Hr').replace('m', 'Min')}</span>
+                                    <span>{item.genres?.join(" | ")}</span>
+                                    <span>{item.metadata?.replace(/(\d{4})\s*-\s*(?=\s*•)/, '$1 - NOW')?.replaceAll("•", " | ")}</span>
+                                </h4>
+                                <p>{item.overview?.replaceAll("<br><br>"," ") ||"No description available."}</p>
+                            </div>
                         </div>
                     </div>
                 </Link>

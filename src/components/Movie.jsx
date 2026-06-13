@@ -5,6 +5,7 @@ import "slick-carousel/slick/slick-theme.css";
 import Loading from './Loading';
 import Carousel from './Carousel';
 import RenderList from './RenderList';
+import Footer from './Footer';
 export default function Movie() {
     const [isLoading, setIsLoading] = useState(true);
     const { fetchTrendingInformation, trendingMovie } = useGlobalContext();
@@ -36,6 +37,7 @@ export default function Movie() {
             </>}
             <div className="heading">Trending Movies :</div>
             <RenderList list={trendingMovie}/>
+            <Footer/>
         </div>
     );
 }

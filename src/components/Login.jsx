@@ -1,6 +1,7 @@
 import { useAuth0 } from '@auth0/auth0-react'
 import axios from 'axios';
 import { useCallback, useEffect } from 'react';
+import { IoIosLogIn, IoIosLogOut } from "react-icons/io";
 
 
 export default function Login() {
@@ -38,7 +39,13 @@ export default function Login() {
                             e.target.onerror = null;
                             e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || "User")}&background=0D8ABC&color=fff`;;
                         }} />
-                        <div className='username'>Hello, {user?.sub?.startsWith("google-oauth2|")
+                    </div>
+                    <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li> <img className='dropDownUserImg' src={user?.picture} alt="" referrerPolicy="no-referrer" onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || "User")}&background=0D8ABC&color=fff`;;
+                        }} /></li>
+                        <li className='username'>Hello, {user?.sub?.startsWith("google-oauth2|")
                             ? (
                                 user.name?.length > 15
                                     ? user.name.substring(0, 16) + '...'
@@ -49,10 +56,8 @@ export default function Login() {
                                     ? user["https://couch-critic/username"]
                                     : user?.email?.split("@")[0]
                             )}
-                        </div>
-                    </div>
-                    <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><button className='loginbtn' onClick={() => logout({ returnTo: window.location.origin })}>Logout</button> </li>
+                        </li>
+                        <li><button className='loginbtn' onClick={() => logout({ returnTo: window.location.origin })}>Logout <IoIosLogOut size={20} /></button> </li>
                     </ul>
                 </div>
                 :
@@ -60,7 +65,7 @@ export default function Login() {
                     const returnTo = window.location.pathname.replace(/^\/Couch-Critic/, "") || "/movie";
                     localStorage.setItem("auth_return_to", returnTo);
                     loginWithRedirect();
-                }}>Login</button>}
+                }}>Login <IoIosLogIn size={20} /></button>}
         </>
     )
 }

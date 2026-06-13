@@ -15,7 +15,7 @@ export default function SingleResult() {
   const { id, type, name } = useParams();
   const [information, setInformation] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-
+  const [visibleCount, setVisibleCount] = useState(12)
 
   const navigate = useNavigate();
   const handleGoBack = () => navigate(-1);
@@ -27,7 +27,7 @@ export default function SingleResult() {
       const res = await axios.get(`https://api.simkl.com/${type}/${id}/${name}?extended=full`, {
         headers: {
           'Content-Type': 'application/json',
-          'simkl-api-key': import.meta.env.VITE_SIMKL_CLIENT_ID_2,
+          'simkl-api-key': import.meta.env.VITE_SIMKL_CLIENT_ID_1,
         },
       });
       const data = res.data
@@ -133,7 +133,7 @@ export default function SingleResult() {
                   title={selectedTrailer.name}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
-                  style={{ borderRadius: "1rem", border: "3px solid white", maxWidth:"1080px", aspectRatio:"16/9" }}
+                  style={{ borderRadius: "1rem", border: "3px solid white", maxWidth: "1080px", aspectRatio: "16/9" }}
                 />
               );
             }
@@ -251,13 +251,40 @@ export default function SingleResult() {
           <div><Comments /></div>
         </div>
 
+
+        {/* Related trailers */}
+        {trailers?.length > 1 && <>
+          <div className="related-vid item-1">
+            <div className="heading">Related Videos :</div>
+            {trailers
+              .filter(trailer => trailer.name?.toLowerCase() !== "official trailer")
+              .slice(0, visibleCount)
+              .map((curTrailer, index) => (
+                <iframe
+                  key={index}
+                  src={`https://www.youtube.com/embed/${curTrailer.youtube}`}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  style={{ borderRadius: "1rem", border: "2px solid white", maxWidth: "345px", aspectRatio: "16/9", marginLeft: "0.5rem" }}
+                />
+              ))}
+          </div>
+          {trailers.length > 12 && (
+            <div className="load-more-wrapper item-1">
+              <button onClick={() => setVisibleCount(prev => prev + 12)} className="load-more-btn">
+                Show More
+              </button>
+            </div>
+          )}
+        </>}
+
         {/* RELATED ITEMS */}
         <div className='related-info item-1'>
           {relations && (<><div className='heading'>Related to {en_title || title}  :</div>
             {/* <hr /> */}
             <div className='related-list'>
               {relations.map((item, index) => (
-                <CardItem key={index} item={item} compact={true} itemType={"anime"} itemId={item.ids.simkl} itemName={item.ids.slug} watchLater={false}/>
+                <CardItem key={index} item={item} compact={true} itemType={"anime"} itemId={item.ids.simkl} itemName={item.ids.slug} watchLater={false} />
               ))}
             </div>
           </>)}
@@ -265,7 +292,7 @@ export default function SingleResult() {
             {/* <hr /> */}
             <div className='related-list'>
               {users_recommendations.map((item, index) => (
-                <CardItem key={index} item={item} compact={true} itemType={item.type} itemId={item.ids.simkl} itemName={item.ids.slug} watchLater={false}/>
+                <CardItem key={index} item={item} compact={true} itemType={item.type} itemId={item.ids.simkl} itemName={item.ids.slug} watchLater={false} />
               ))}
             </div>
           </>)}

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { FaStar, FaThumbsUp } from "react-icons/fa";
 import WatchLaterButton from './WatchLaterButton';
 
-export default function CardItem({ item, compact, itemType, itemId, itemName, url, watchLater }) {
+export default function CardItem({ item, compact, itemType, itemId, itemName, url, watchLater, showRating }) {
     const {
         poster,
         title,
@@ -28,6 +28,7 @@ export default function CardItem({ item, compact, itemType, itemId, itemName, ur
     const itemRank = ratings?.mal?.rank || rank;
     const infoClass = compact ? 'cardInfo compact' : 'cardInfo';
     const watchLaterClass = watchLater ? '' : 'hidden';
+    const ratingClass = showRating ? 'rating' : 'rating hidden';
 
     itemType = itemType === 'movie' ? 'movies' : itemType;
 
@@ -52,15 +53,15 @@ export default function CardItem({ item, compact, itemType, itemId, itemName, ur
                     </div>
                     <hr />
                     <ul className={infoClass}>
-                        <div style={{ display: 'flex', flexDirection: 'row', gap: '20px', marginTop: '10px' }}>
-                            {rating && <li>
+                        <div className={ratingClass}>
+                            <li>
                                 <FaStar size={20} color='#ffc107' className='mb-1 me-1' />
-                                {rating}
-                            </li>}
-                            {votes && <li>
+                                {rating ? rating : 0}
+                            </li>
+                            <li>
                                 <FaThumbsUp size={20} color='#0d6efd' className='mb-1 me-1' />
-                                {votes}
-                            </li>}
+                                {votes ? votes : 0}
+                            </li>
                         </div>
                         {episode && <li><b>Airing Episode :</b> {episode.episode}</li>}
                         {date ?
@@ -71,7 +72,7 @@ export default function CardItem({ item, compact, itemType, itemId, itemName, ur
                             : (release_date ?
                                 <li><b>Released :</b>{new Date(release_date).toLocaleDateString("en-GB").replaceAll("/", "-")}</li>     // Released true
                                 :
-                                <li><b>Year :</b>{year}</li>)       // Released false
+                                <li><b>Year :</b>{year ? year : "N/A"}</li>)       // Released false
                         }
                         {date !== undefined && <li><b>Time :</b> {date === null ? "N/A" : new Date(date).toLocaleTimeString().replaceAll(":00", "")}</li>}
                         {ep_count && <li><b>Total Episodes :</b> {ep_count}</li>}

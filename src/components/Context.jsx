@@ -2,9 +2,9 @@ import React, { useCallback, useContext, useState, useRef } from "react";
 import axios from "axios";
 const AppContext = React.createContext();
 const simklUrl = `https://api.simkl.com/search/`;
+// const tmdb_key = import.meta.env.VITE_TMDB_API_KEY;
 const simklKeys = [
-    import.meta.env.VITE_SIMKL_CLIENT_ID_1,
-    import.meta.env.VITE_SIMKL_CLIENT_ID_2,
+    import.meta.env.VITE_SIMKL_CLIENT_ID_1
 ];
 
 const fetchWithRotatingKeys = async (url) => {
@@ -50,7 +50,7 @@ const AppProvider = ({ children }) => {
 
     const [upcomingShows, setUpcomingShows] = useState([])
     const [upcomingAnime, setUpcomingAnime] = useState([])
-    
+
     const [isError, setIsError] = useState({ show: false, msg: "" });
     const [query, setQuery] = useState("");
     const [progress, setProgress] = useState(0);
@@ -63,6 +63,86 @@ const AppProvider = ({ children }) => {
     const setLoadingProgress = useCallback((progress) => {
         setProgress(progress);
     }, []);
+
+    // const fetchMovieAndTv = useCallback(async (type, query) => {
+    //     try {
+    //         setLoadingProgress(10)
+    //         const key = `${type}-query-${query.trim().toLowerCase()}`
+
+    //         // Checking cached data
+    //         if (searchCache.current[key]) {
+    //             console.log(`Using cached data for ${key}`);
+    //             const cachedData = searchCache.current[key];
+
+    //             if (type === "movie") setMovie(cachedData);
+    //             else if (type === "tv") setShows(cachedData);
+    //             else if (type === "anime") setAnime(cachedData);
+
+    //             setLoadingProgress(100);
+    //             return;
+    //         }
+
+    //         // No cache data found
+    //         let url = `https://api.themoviedb.org/3/search/${type}?query=${query}&page=1`
+    //         const res = await axios.get(url, {
+    //             headers: {
+    //                 Accept: "application/json",
+    //                 Authorization: `Bearer ${tmdb_key}`
+    //             }
+    //         })
+    //         const data = res.data.results
+    //         console.log("Searched Data:", data)
+    //         console.log(data.length)
+
+    //         setLoadingProgress(30)
+
+    //         // Storing data in cache
+    //         searchCache.current[key] = data;
+
+    //         if (type === "movie") {
+    //             setMovie(data);
+    //         } else if (type === "tv") {
+    //             setShows(data);
+    //         } else if (type === "anime") {
+    //             setAnime(data);
+    //         }
+
+    //         if (data.length === 0) {
+    //             setIsError({ show: true, msg: `No ${type} found for your search.` });
+    //             setTimeout(() => setIsError({ show: false, msg: "" }), 3000);
+    //         }
+    //         setTimeout(() => setLoadingProgress(100), 800);
+
+    //     } catch (error) {
+    //         console.error(error);
+    //         setIsError({
+    //             show: true,
+    //             msg: `Failed to fetch ${type} data.`,
+    //         });
+    //         setTimeout(() => setIsError({ show: false, msg: "" }), 3000);
+    //         setTimeout(() => setLoadingProgress(100), 800);
+    //     }
+    // }, [setLoadingProgress])
+
+    // const fetchAnime = useCallback(async (query) => {
+    //     try {
+    //         setLoadingProgress(10)
+    //         const res = await axios(`https://api.jikan.moe/v4/anime?q=${query}`)
+    //         const data = res.data;
+    //         setLoadingProgress(30)
+    //         console.log("Searched anime data:", data)
+    //         setAnime(data)
+    //         setTimeout(() => setLoadingProgress(100), 800);
+    //     } catch (error) {
+    //         console.error(error);
+    //         setIsError({
+    //             show: true,
+    //             msg: `Failed to fetch ${genre ? "genre" : type} data.`,
+    //         });
+    //         setTimeout(() => setIsError({ show: false, msg: "" }), 3000);
+    //         setTimeout(() => setLoadingProgress(100), 800);
+    //     }
+    // }, [setLoadingProgress])
 
     const fetchInformation = useCallback(async (type, query = "", genre = "") => {
         genre = genre === "documentary" ? "documentaries" : genre;
@@ -115,13 +195,13 @@ const AppProvider = ({ children }) => {
 
             setTimeout(() => setLoadingProgress(100), 800);
         } catch (error) {
-            // if(error.code === )
             console.error(error);
             setIsError({
                 show: true,
                 msg: `Failed to fetch ${genre ? "genre" : type} data.`,
             });
             setTimeout(() => setIsError({ show: false, msg: "" }), 3000);
+            setTimeout(() => setLoadingProgress(100), 800);
         }
     }, [setLoadingProgress]);
 
@@ -140,6 +220,7 @@ const AppProvider = ({ children }) => {
         }
         // No cache data found
         try {
+            // const res = await axios.get(`https://api.simkl.com/${type}/trending/today?extended=overview,genres,metadata`)
             const res = await fetchWithRotatingKeys(`https://api.simkl.com/${type}/trending/today?extended=overview,genres,metadata`)
             const data = res.data
             console.log(`Fetched Trending ${type} Data:`, data);
@@ -267,7 +348,9 @@ const AppProvider = ({ children }) => {
             progress,
 
             movie,
+            // setMovie,
             shows,
+            // setShows,
             anime,
             searchGenre,
 
@@ -289,6 +372,9 @@ const AppProvider = ({ children }) => {
             fetchTrendingInformation,
             fetchAiringInformation,
             fetchUpcomingInformation,
+
+            // fetchAnime
+            // fetchMovieAndTv
         }}>
             {children}
         </AppContext.Provider>
