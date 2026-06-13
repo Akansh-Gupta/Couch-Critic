@@ -33,6 +33,7 @@ import SingleResult from './components/SingleResult';
 import AuthCallback from './components/AuthCallback';
 import Loading from './components/Loading';
 import CheckEmail from './components/CheckEmail';
+import WatchLater from './components/WatchLater';
 
 function AppContent() {
   const { progress } = useGlobalContext();
@@ -51,9 +52,9 @@ function AppContent() {
       />
       <NavBar />
       <Routes>
+        <Route path="/" element={<Navigate to="/movie" />} />
         <Route path="/callback" element={<AuthCallback />} />
         <Route path="/check-email" element={<CheckEmail />} />
-        <Route path="/" element={<Navigate to="/movie" />} />
         <Route path="/movie" element={<Movie />} />
         <Route path="/loading" element={<Loading />} /> {/* for testing loading screen */}
         <Route path="/tv" element={<Show />} />
@@ -63,6 +64,7 @@ function AppContent() {
         <Route path="/search-anime" element={<SearchAnime />} />
         <Route path='/:type/:id/:name' element={<SingleResult />} />
         <Route path='/:type/genres/:genre' element={<Genre />} />
+        <Route path="/watch-later" element={<WatchLater />} />
         <Route path='*' element={<PageNotFound />} />
       </Routes>
     </>

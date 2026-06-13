@@ -5,7 +5,6 @@ export default defineConfig({
     plugins: [react()],
     base: '/Couch-Critic',
     server: {
-        port: 3000,
         open: true
     }
 })

@@ -1,71 +1,79 @@
 .watch-later-btn {
-  border: 2px solid white;
-  border-radius: 1rem;
-  width: 100%;
-  height: 36px;
-  font-size: clamp(1rem, 2vw, 1.5rem);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.3rem;
-  padding: 6px;
-  margin: 0.4rem 0 -0.5rem 0;
-  background: white;
+    border: 2px solid white;
+    border-radius: 1rem;
+    width: 100%;
+    height: clamp(28px, 3.5vw, 42px);
+    font-size: clamp(0.65rem, 1.2vw, 1.1rem);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(3px, 0.5vw, 8px);
+    padding: clamp(4px, 0.6vw, 8px);
+    margin: clamp(4px, 0.5vw, 8px) 0;
+    background: white;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .watch-later-btn:focus {
-  background-color: white;
-  color: black;
+    background-color: white;
+    color: black;
 }
 
 .watch-later-btn:hover {
-  border: 2px solid var(--primary);
+    border: 2px solid var(--primary);
 }
 
 .watch-later-btn .icon {
-  transition: transform 0.4s ease;
-  width: 14%;
-  margin-bottom: 3px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    transition: transform 0.4s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.watch-later-btn .icon svg {
+    width: clamp(10px, 1.4vw, 18px);
+    height: clamp(10px, 1.4vw, 18px);
 }
 
 .watch-later-btn.added .icon {
-  transform-origin: center;
-  transform: rotate(360deg);
+    transform-origin: center;
+    transform: rotate(360deg);
 }
 
 .watch-later-btn .icon-text {
-  font-size: clamp(0.7rem, 1.5vw, 1.1rem);
-  font-weight: 600;
-  width: 86%;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+    font-size: clamp(0.55rem, 1vw, 1rem);
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-@media (min-width: 1024px) {
-  .watch-later-btn {
-    border: 3px solid white;
-    height: 40px;
-    font-size: 1.5rem;
-    padding: 8px;
-    margin: 0.5rem 0 -0.7rem 0;
-  }
+@media (max-width: 480px) {
+    .watch-later-btn {
+        height: 26px;
+        border-radius: 0.6rem;
+    }
 
-  .watch-later-btn:hover {
-    border: 3px solid var(--primary);
-  }
+    .watch-later-btn .icon svg {
+        width: 10px;
+        height: 10px;
+    }
 
-  .watch-later-btn .icon {
-    width: 10%;
-  }
+    .watch-later-btn .icon-text {
+        font-size: 0.52rem;
+    }
+}
 
-  .watch-later-btn .icon-text {
-    font-size: 1.1rem;
-    width: 90%;
-  }
+@media (min-width: 481px) and (max-width: 860px) {
+    .watch-later-btn {
+        height: 30px;
+    }
+
+    .watch-later-btn .icon-text {
+        font-size: 0.62rem;
+    }
 }

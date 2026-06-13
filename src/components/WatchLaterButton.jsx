@@ -15,7 +15,7 @@ export default function WatchLaterButton() {
             onClick={handleClick}
         >
             <span className="icon">{added ? <FaCheckCircle color='#00c853' /> : <FaPlusCircle color='#ff5323' />}</span>
-            <span className="icon-text">{added ? "Added to watch later" : "Add to watch later"}</span>
+            <span className="icon-text">{added ? "Added" : "Watch Later"}</span>
         </button>
     </>
 
