@@ -40,20 +40,20 @@ export default function Anime() {
             <Carousel list={trendingAnime} />
             {airingAnime && <>
                 <div className="heading" >Airing Today :</div>
-                <RenderList list={airingAnime} showRating={false}/>
+                <RenderList list={airingAnime} showRating={false} compact={false}/>
                 <hr />
             </>}
             <div className="heading">Upcoming Anime :</div>
-            <RenderList list={upcomingAnime} showRating={false}/>
+            <RenderList list={upcomingAnime} showRating={false} compact={false}/>
             <hr />
             {premiereItems?.length > 0 && <>
                 <div className="heading" >New Releases :</div>
-                <RenderList list={premiereItems} />
+                <RenderList list={premiereItems} compact={false}/>
                 {/* <RenderList list={trendingAnime} filterPremiere={true} /> */}
                 <hr />
             </>}
             <div className="heading" >Trending Now :</div>
-            <RenderList list={trendingAnime} />
+            <RenderList list={trendingAnime} compact={false}/>
         </div>
     );
 }

@@ -31,12 +31,12 @@ export default function Movie() {
             <Carousel list={trendingMovie} />
             {premiereItems.length > 0 && <>
                 <div className="heading">Premiering Now :</div>
-                <RenderList list={premiereItems}/>
+                <RenderList list={premiereItems} compact={false}/>
                 {/* <RenderList list={trendingMovie} filterPremiere={true}/> */}
                 <hr />
             </>}
             <div className="heading">Trending Movies :</div>
-            <RenderList list={trendingMovie}/>
+            <RenderList list={trendingMovie} compact={false}/>
             <Footer/>
         </div>
     );

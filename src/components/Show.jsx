@@ -40,22 +40,22 @@ export default function Shows() {
             <Carousel list={trendingShows} />
             {premiereItems?.length > 0 && <>
                 <div className="heading">Premiering Now :</div>
-                <RenderList list={premiereItems} />
+                <RenderList list={premiereItems} compact={false}/>
                 {/* <RenderList list={trendingShows} filterPremiere={true} /> */}
                 <hr />
             </>}
             {airingShows && <>
                 <div className="heading">Airing Today :</div>
-                <RenderList list={airingShows} showRating={false}/>
+                <RenderList list={airingShows} showRating={false} compact={false}/>
                 <hr />
             </>}
             <div className="heading">Upcoming Shows :</div>
-            <RenderList list={upcomingShows} showRating={false}/>
+            <RenderList list={upcomingShows} showRating={false} compact={false}/>
             <hr />
 
 
             <div className="heading">Trending TV Shows :</div>
-            <RenderList list={trendingShows} />
+            <RenderList list={trendingShows} compact={false}/>
         </div>
     );
 }
