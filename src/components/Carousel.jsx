@@ -20,7 +20,7 @@ export default function Carousel(props) {
     return (
         <Slider {...settings}>
             {list?.slice(0, 10).map((item) => {
-                const rating = item.ratings.imdb?.rating || item.ratings.mal?.rating || item.ratings.simkl?.rating.toFixed(1) || "N/A";
+                const rating = item.ratings?.imdb?.rating || item.ratings?.mal?.rating || item.ratings?.simkl?.rating?.toFixed(1) || "N/A";
                 return <Link
                     key={item.ids.simkl_id}
                     draggable={false} to={item.url?.replace(/^\/movies?\//, "/movies/")}>
