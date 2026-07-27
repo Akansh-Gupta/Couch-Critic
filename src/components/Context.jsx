@@ -55,6 +55,14 @@ const AppProvider = ({ children }) => {
     const [query, setQuery] = useState("");
     const [progress, setProgress] = useState(0);
 
+    const [watchLaterList, setWatchLaterList] = useState(() => {
+        try {
+            return JSON.parse(localStorage.getItem('watchLaterList')) || [];
+        } catch {
+            return [];
+        }
+    });
+
     const searchCache = useRef({});     // cache for fetchInformation
     const trendingCache = useRef({});   // cache for fetchTrendingInformation   
     const airingCache = useRef({});   // cache for fetchAiringInformation   
@@ -64,85 +72,16 @@ const AppProvider = ({ children }) => {
         setProgress(progress);
     }, []);
 
-    // const fetchMovieAndTv = useCallback(async (type, query) => {
-    //     try {
-    //         setLoadingProgress(10)
-    //         const key = `${type}-query-${query.trim().toLowerCase()}`
-
-    //         // Checking cached data
-    //         if (searchCache.current[key]) {
-    //             console.log(`Using cached data for ${key}`);
-    //             const cachedData = searchCache.current[key];
-
-    //             if (type === "movie") setMovie(cachedData);
-    //             else if (type === "tv") setShows(cachedData);
-    //             else if (type === "anime") setAnime(cachedData);
-
-    //             setLoadingProgress(100);
-    //             return;
-    //         }
-
-    //         // No cache data found
-    //         let url = `https://api.themoviedb.org/3/search/${type}?query=${query}&page=1`
-    //         const res = await axios.get(url, {
-    //             headers: {
-    //                 Accept: "application/json",
-    //                 Authorization: `Bearer ${tmdb_key}`
-    //             }
-    //         })
-    //         const data = res.data.results
-    //         console.log("Searched Data:", data)
-    //         console.log(data.length)
-
-    //         setLoadingProgress(30)
-
-    //         // Storing data in cache
-    //         searchCache.current[key] = data;
-
-    //         if (type === "movie") {
-    //             setMovie(data);
-    //         } else if (type === "tv") {
-    //             setShows(data);
-    //         } else if (type === "anime") {
-    //             setAnime(data);
-    //         }
-
-    //         if (data.length === 0) {
-    //             setIsError({ show: true, msg: `No ${type} found for your search.` });
-    //             setTimeout(() => setIsError({ show: false, msg: "" }), 3000);
-    //         }
-    //         setTimeout(() => setLoadingProgress(100), 800);
-
-    //     } catch (error) {
-    //         console.error(error);
-    //         setIsError({
-    //             show: true,
-    //             msg: `Failed to fetch ${type} data.`,
-    //         });
-    //         setTimeout(() => setIsError({ show: false, msg: "" }), 3000);
-    //         setTimeout(() => setLoadingProgress(100), 800);
-    //     }
-    // }, [setLoadingProgress])
-
-    // const fetchAnime = useCallback(async (query) => {
-    //     try {
-    //         setLoadingProgress(10)
-    //         const res = await axios(`https://api.jikan.moe/v4/anime?q=${query}`)
-    //         const data = res.data;
-    //         setLoadingProgress(30)
-    //         console.log("Searched anime data:", data)
-    //         setAnime(data)
-    //         setTimeout(() => setLoadingProgress(100), 800);
-    //     } catch (error) {
-    //         console.error(error);
-    //         setIsError({
-    //             show: true,
-    //             msg: `Failed to fetch ${genre ? "genre" : type} data.`,
-    //         });
-    //         setTimeout(() => setIsError({ show: false, msg: "" }), 3000);
-    //         setTimeout(() => setLoadingProgress(100), 800);
-    //     }
-    // }, [setLoadingProgress])
+    const toggleWatchLater = useCallback((item) => {
+        setWatchLaterList(prev => {
+            const exists = prev.some(i => i.ids?.simkl_id === item.ids?.simkl_id);
+            const updated = exists
+                ? prev.filter(i => i.ids?.simkl_id !== item.ids?.simkl_id)
+                : [...prev, item];
+            localStorage.setItem('watchLaterList', JSON.stringify(updated));
+            return updated;
+        });
+    }, []);
 
     const fetchInformation = useCallback(async (type, query = "", genre = "") => {
         genre = genre === "documentary" ? "documentaries" : genre;
@@ -300,46 +239,6 @@ const AppProvider = ({ children }) => {
         }
     }, [])
 
-    // const renderList = ({ id = "", list = [], type = "", noResult = false, compact = true, filterPremiere = false, filterUpcoming = false }) => {
-    //     const resultClass = noResult ? "no-results" : "no-results hidden";
-    //     let filteredList = list
-    //     if (filterPremiere) {
-    //         filteredList = list.filter(item => item.status === "premiere")
-    //     } else if (filterUpcoming) {
-    //         filteredList = list.filter(item => item.status === "soon")
-    //     }
-
-    //     return (
-    //         <>
-    //             <section className='result-container' id={id}>
-    //                 {filteredList.length === 0 && <div className={resultClass}>Search to find {type?.toUpperCase()} Information</div>}
-    //                 {filteredList.filter(item => item.poster).map((curItem, index) => (
-    //                     <CardItem item={curItem} index={index} key={curItem.ids.simkl || index} url={curItem.url} compact={compact} />
-    //                 ))}
-    //             </section>
-    //         </>
-    //     )
-    // };
-
-    // const showSearchedMovie = () => renderList({ list: movie, noResult: true, type: "movies", compact: false });
-    // const showSearchedShows = () => renderList({ list: shows, noResult: true, type: "tv", compact: false });
-    // const showSearchedAnime = () => renderList({ list: anime, noResult: true, type: "anime", compact: false });
-    // const showSearchedGenre = () => renderList({ list: genre, noResult: true, compact: true });
-
-    // const showTrendingMovie = () => renderList({ list: trendingMovie });
-    // const showTrendingShows = () => renderList({ list: trendingShows });
-    // const showTrendingAnime = () => renderList({ list: trendingAnime });
-
-    // const moviePremiere = () => renderList({ list: trendingMovie, filterPremiere: true });
-    // const showsPremiere = () => renderList({ list: trendingShows, filterPremiere: true });
-    // const animePremiere = () => renderList({ list: trendingAnime, filterPremiere: true });
-
-    // const showAiringAnime = () => renderList({ list: airingAnime })
-    // const showAiringShows = () => renderList({ list: airingShows })
-
-    // const showUpcomingShows = () => renderList({ list: upcomingShows });
-    // const showUpcomingAnime = () => renderList({ list: upcomingAnime });
-
     //This is the return of the AppProvider component
     return (
         <AppContext.Provider value={{
@@ -372,6 +271,9 @@ const AppProvider = ({ children }) => {
             fetchTrendingInformation,
             fetchAiringInformation,
             fetchUpcomingInformation,
+
+            watchLaterList,
+            toggleWatchLater,
 
             // fetchAnime
             // fetchMovieAndTv

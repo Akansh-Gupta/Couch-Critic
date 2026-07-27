@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useGlobalContext } from './Context';
 
-export default function WatchLaterButton() {
-    const [added, setAdded] = useState(false);
+export default function WatchLaterButton({ item }) {
+    const { watchLaterList, toggleWatchLater } = useGlobalContext();
+    const added = watchLaterList.some(i => i.ids?.simkl_id === item.ids?.simkl_id);
 
     const handleClick = (e) => {
         e.preventDefault();
         e.stopPropagation();
-        setAdded(prev => !prev);
-        // TODO: persist to backend/localStorage
+        toggleWatchLater(item);
     };
 
     return (

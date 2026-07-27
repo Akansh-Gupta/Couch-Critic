@@ -50,7 +50,7 @@ export default function CardItem({ item, compact, itemType, itemId, itemName, ur
                     </Link>
                     {!compact && watchLater && (
                         <div className="watch-later-bookmark">
-                            <WatchLaterButton />
+                            <WatchLaterButton item={item} />
                         </div>
                     )}
                 </div>
