@@ -41,7 +41,7 @@ export default function RenderList({
                     <CardItem
                         item={curItem}
                         index={index}
-                        key={curItem.ids?.simkl || index}
+                        key={curItem.ids?.simkl_id || index}
                         url={curItem.url}
                         compact={compact}
                         watchLater={watchLater}

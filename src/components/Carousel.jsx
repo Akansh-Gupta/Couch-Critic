@@ -22,7 +22,7 @@ export default function Carousel(props) {
             {list?.slice(0, 10).map((item) => {
                 const rating = item.ratings?.imdb?.rating || item.ratings?.mal?.rating || item.ratings?.simkl?.rating?.toFixed(1) || "N/A";
                 return <Link
-                    key={item.ids.simkl_id}
+                    key={item.ids?.simkl_id}
                     draggable={false} to={item.url?.replace(/^\/movies?\//, "/movies/")}>
                     <div className="banner" style={{ backgroundImage: `url(https://simkl.in/posters/${item.poster}_m.webp)` }} >
                         <div className="content active">
