@@ -248,7 +248,7 @@ export default function SingleResult() {
 
         {/* COMMENTS */}
         <div className='comment-section item-1'>
-          <div><Comments /></div>
+          <div><Comments itemId={id} itemType={type} /></div>
         </div>
 
 
@@ -284,7 +284,7 @@ export default function SingleResult() {
             {/* <hr /> */}
             <div className='related-list'>
               {relations.map((item, index) => (
-                <CardItem key={index} item={item} compact={true} itemType={"anime"} itemId={item.ids.simkl} itemName={item.ids.slug} watchLater={false} />
+                <CardItem key={index} item={item} compact={true} itemType={"anime"} itemId={item.ids?.simkl_id} itemName={item.ids?.slug} watchLater={false} />
               ))}
             </div>
           </>)}
@@ -292,7 +292,7 @@ export default function SingleResult() {
             {/* <hr /> */}
             <div className='related-list'>
               {users_recommendations.map((item, index) => (
-                <CardItem key={index} item={item} compact={true} itemType={item.type} itemId={item.ids.simkl} itemName={item.ids.slug} watchLater={false} />
+                <CardItem key={index} item={item} compact={true} itemType={item.type} itemId={item.ids?.simkl_id} itemName={item.ids?.slug} watchLater={false} />
               ))}
             </div>
           </>)}
