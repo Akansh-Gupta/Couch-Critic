@@ -3,9 +3,10 @@ import { Link, NavLink, useLocation } from 'react-router-dom'
 import Search from './Search'
 import Login from './Login'
 import { FaSearch, FaFilm, FaTv, FaHome } from 'react-icons/fa'
-import { SiCrunchyroll } from 'react-icons/si'
+import { GiMagicGate  } from "react-icons/gi";
 import { MdOutlineWatchLater } from 'react-icons/md'
 import { BsCollectionFill } from 'react-icons/bs'
+import { FaCouch } from "react-icons/fa";
 
 export default function NavBar() {
     const location = useLocation();
@@ -29,7 +30,9 @@ export default function NavBar() {
     return (
         <div>
             <div className={color ? "header header-bg" : "header"}>
-                <Link to="/movie" className="logo">Couch Critic</Link>
+                <Link to="/movie" className="logo">
+                <FaCouch className="nav-icon" color='#ff3700' style={{marginBottom: '0.5rem'}}/> Couch Critic
+                </Link>
                 <Search />
 
                 <button
@@ -67,7 +70,7 @@ export default function NavBar() {
                     {showRoute && (
                         <li>
                             <NavLink to="/anime" className="listItem">
-                                <SiCrunchyroll className="nav-icon" /> Anime
+                                <GiMagicGate  className="nav-icon" /> Anime
                             </NavLink>
                         </li>
                     )}
