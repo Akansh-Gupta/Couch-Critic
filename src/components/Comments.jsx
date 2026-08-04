@@ -1,20 +1,40 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { FaPaperPlane } from 'react-icons/fa';
+import { createPortal } from 'react-dom';
 import axios from 'axios';
 
-const MAX_COMPOSER_HEIGHT = 160;
+const VISIBLE_REPLIES = 2;
 
-function CommentComposer({ value, onChange, onSubmit, submitting, placeholder, autoFocus }) {
-    const textareaRef = useRef(null);
-
+function useAutoGrow(ref, value, maxHeight) {
     useEffect(() => {
-        const el = textareaRef.current;
+        const el = ref.current;
         if (!el) return;
         el.style.height = 'auto';
-        el.style.height = Math.min(el.scrollHeight, MAX_COMPOSER_HEIGHT) + 'px';
-    }, [value]);
+        el.style.height = Math.min(el.scrollHeight, maxHeight) + 'px';
+    }, [value, maxHeight]);
+}
 
+function AutoGrowTextarea({ value, onChange, onKeyDown, placeholder, autoFocus, maxHeight = 1600 }) {
+    const ref = useRef(null);
+    useAutoGrow(ref, value, maxHeight);
+
+    return (
+        <textarea
+            ref={ref}
+            className="comment"
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            onKeyDown={onKeyDown}
+            placeholder={placeholder}
+            rows={1}
+            autoFocus={autoFocus}
+            style={{ maxHeight: `${maxHeight}px` }}
+        ></textarea>
+    );
+}
+
+function CommentComposer({ value, onChange, onSubmit, submitting, placeholder, autoFocus, maxHeight }) {
     const handleKeyDown = (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
@@ -24,18 +44,14 @@ function CommentComposer({ value, onChange, onSubmit, submitting, placeholder, a
 
     return (
         <div className="comment-composer">
-            <textarea
-                ref={textareaRef}
-                className="comment"
+            <AutoGrowTextarea
                 value={value}
-                onChange={(e) => onChange(e.target.value)}
+                onChange={onChange}
                 onKeyDown={handleKeyDown}
                 placeholder={placeholder}
-                rows={1}
-                maxLength={1000}
                 autoFocus={autoFocus}
-                style={{ maxHeight: `${MAX_COMPOSER_HEIGHT}px` }}
-            ></textarea>
+                maxHeight={maxHeight}
+            />
             {value.trim() && (
                 <button
                     type="button"
@@ -51,6 +67,160 @@ function CommentComposer({ value, onChange, onSubmit, submitting, placeholder, a
     );
 }
 
+function CommentItem({ comment, isReply, replies = [], currentUserSub, isAuthenticated, onSubmitReply, onSubmitEdit, onRequestDelete }) {
+    const isOwner = isAuthenticated && currentUserSub === comment.userSub;
+
+    const [isEditing, setIsEditing] = useState(false);
+    const [editText, setEditText] = useState(comment.text);
+    const [editError, setEditError] = useState('');
+    const [savingEdit, setSavingEdit] = useState(false);
+
+    const [isReplying, setIsReplying] = useState(false);
+    const [replyText, setReplyText] = useState('');
+    const [replyError, setReplyError] = useState('');
+    const [submittingReply, setSubmittingReply] = useState(false);
+
+    const [showAllReplies, setShowAllReplies] = useState(false);
+
+    const startEdit = () => {
+        setEditText(comment.text);
+        setEditError('');
+        setIsEditing(true);
+    };
+
+    const saveEdit = async () => {
+        if (!editText.trim()) return;
+        setSavingEdit(true);
+        setEditError('');
+        try {
+            await onSubmitEdit(comment._id, editText);
+            setIsEditing(false);
+        } catch (err) {
+            console.error('Failed to edit comment:', err.message);
+            setEditError('Failed to save changes. Please try again.');
+        } finally {
+            setSavingEdit(false);
+        }
+    };
+
+    const submitReply = async () => {
+        if (!replyText.trim()) return;
+        setSubmittingReply(true);
+        setReplyError('');
+        try {
+            await onSubmitReply(comment._id, replyText);
+            setIsReplying(false);
+            setReplyText('');
+        } catch (err) {
+            console.error('Failed to post reply:', err.message);
+            setReplyError('Failed to post reply. Please try again.');
+        } finally {
+            setSubmittingReply(false);
+        }
+    };
+
+    const visibleReplies = showAllReplies ? replies : replies.slice(0, VISIBLE_REPLIES);
+    const hiddenCount = replies.length - visibleReplies.length;
+
+    return (
+        <div>
+            <div className={`comment-item${isReply ? ' reply' : ''}`}>
+                <img
+                    className="comment-avatar"
+                    src={comment.picture}
+                    alt=""
+                    referrerPolicy="no-referrer"
+                    onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(comment.username || "User")}&background=0D8ABC&color=fff`;
+                    }}
+                />
+                <div className="comment-body">
+                    <div className="comment-meta">
+                        <span className="comment-username">{comment.username}</span>
+                        <span className="comment-time">
+                            {new Date(comment.createdAt).toLocaleString()}
+                            {comment.editedAt && <em> · edited</em>}
+                        </span>
+                    </div>
+
+                    {isEditing ? (
+                        <div className="comment-edit-box">
+                            <AutoGrowTextarea value={editText} onChange={setEditText} maxHeight={200} />
+                            {editError && <div className="comment-error">{editError}</div>}
+                            <div className="comment-edit-actions">
+                                <button className="comment-action-btn save" onClick={saveEdit} disabled={!editText.trim() || savingEdit}>
+                                    {savingEdit ? "Saving..." : "Save"}
+                                </button>
+                                <button className="comment-action-btn" onClick={() => setIsEditing(false)} disabled={savingEdit}>Cancel</button>
+                            </div>
+                        </div>
+                    ) : (
+                        <>
+                            <div className="comment-text">{comment.text}</div>
+                            {(isOwner || (!isReply && isAuthenticated)) && (
+                                <div className="comment-owner-actions">
+                                    {!isReply && isAuthenticated && (
+                                        <button className="comment-action-btn" onClick={() => setIsReplying(prev => !prev)}>
+                                            {isReplying ? "Cancel" : "Reply"}
+                                        </button>
+                                    )}
+                                    {isOwner && (
+                                        <>
+                                            <button className="comment-action-btn" onClick={startEdit}>Edit</button>
+                                            <button className="comment-action-btn danger" onClick={() => onRequestDelete(comment._id)}>Delete</button>
+                                        </>
+                                    )}
+                                </div>
+                            )}
+                        </>
+                    )}
+
+                    {!isReply && isReplying && (
+                        <div className="comment-reply-composer">
+                            <CommentComposer
+                                value={replyText}
+                                onChange={setReplyText}
+                                onSubmit={submitReply}
+                                submitting={submittingReply}
+                                placeholder={`Reply to ${comment.username}...`}
+                                autoFocus
+                            />
+                            {replyError && <div className="comment-error">{replyError}</div>}
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {!isReply && replies.length > 0 && (
+                <div className="comment-replies">
+                    {visibleReplies.map((r) => (
+                        <CommentItem
+                            key={r._id}
+                            comment={r}
+                            isReply
+                            currentUserSub={currentUserSub}
+                            isAuthenticated={isAuthenticated}
+                            onSubmitEdit={onSubmitEdit}
+                            onRequestDelete={onRequestDelete}
+                        />
+                    ))}
+                    {hiddenCount > 0 && (
+                        <button className="comment-action-btn see-more" onClick={() => setShowAllReplies(true)}>
+                            See {hiddenCount} more {hiddenCount === 1 ? 'reply' : 'replies'}
+                        </button>
+                    )}
+                    {showAllReplies && replies.length > VISIBLE_REPLIES && (
+                        <button className="comment-action-btn see-more" onClick={() => setShowAllReplies(false)}>
+                            Hide replies
+                        </button>
+                    )}
+                </div>
+            )}
+        </div>
+    );
+}
+
 export default function Comments({ itemId, itemType }) {
     const { isAuthenticated, loginWithRedirect, getAccessTokenSilently, user } = useAuth0();
     const [comments, setComments] = useState([]);
@@ -58,15 +228,6 @@ export default function Comments({ itemId, itemType }) {
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState('');
-
-    const [editingId, setEditingId] = useState(null);
-    const [editText, setEditText] = useState('');
-    const [editError, setEditError] = useState('');
-
-    const [replyingTo, setReplyingTo] = useState(null);
-    const [replyText, setReplyText] = useState('');
-    const [submittingReply, setSubmittingReply] = useState(false);
-    const [replyError, setReplyError] = useState('');
 
     const [deleteTarget, setDeleteTarget] = useState(null);
     const [deleting, setDeleting] = useState(false);
@@ -109,67 +270,24 @@ export default function Comments({ itemId, itemType }) {
         }
     };
 
-    const startEdit = (c) => {
-        setEditingId(c._id);
-        setEditText(c.text);
-        setEditError('');
+    const submitReply = async (parentId, replyText) => {
+        const token = await getAccessTokenSilently();
+        const res = await axios.post('http://localhost:4000/comments', {
+            itemId, itemType, text: replyText.trim(), parentId
+        }, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        setComments(prev => [...prev, res.data]);
     };
 
-    const cancelEdit = () => {
-        setEditingId(null);
-        setEditText('');
-        setEditError('');
-    };
-
-    const saveEdit = async (id) => {
-        if (!editText.trim()) return;
-        setEditError('');
-        try {
-            const token = await getAccessTokenSilently();
-            const res = await axios.patch(`http://localhost:4000/comments/${id}`, {
-                text: editText.trim()
-            }, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            setComments(prev => prev.map(c => c._id === id ? res.data : c));
-            cancelEdit();
-        } catch (err) {
-            console.error('Failed to edit comment:', err.message);
-            setEditError('Failed to save changes. Please try again.');
-        }
-    };
-
-    const startReply = (id) => {
-        setReplyingTo(id);
-        setReplyText('');
-        setReplyError('');
-    };
-
-    const cancelReply = () => {
-        setReplyingTo(null);
-        setReplyText('');
-        setReplyError('');
-    };
-
-    const postReply = async (parentId) => {
-        if (!replyText.trim()) return;
-        setSubmittingReply(true);
-        setReplyError('');
-        try {
-            const token = await getAccessTokenSilently();
-            const res = await axios.post('http://localhost:4000/comments', {
-                itemId, itemType, text: replyText.trim(), parentId
-            }, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            setComments(prev => [...prev, res.data]);
-            cancelReply();
-        } catch (err) {
-            console.error('Failed to post reply:', err.message);
-            setReplyError('Failed to post reply. Please try again.');
-        } finally {
-            setSubmittingReply(false);
-        }
+    const submitEdit = async (id, newText) => {
+        const token = await getAccessTokenSilently();
+        const res = await axios.patch(`http://localhost:4000/comments/${id}`, {
+            text: newText.trim()
+        }, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        setComments(prev => prev.map(c => c._id === id ? res.data : c));
     };
 
     const confirmDelete = async () => {
@@ -193,84 +311,6 @@ export default function Comments({ itemId, itemType }) {
     const repliesFor = (id) => comments
         .filter(c => c.parentId === id)
         .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-
-    const renderCommentBody = (c, { isReply = false } = {}) => {
-        const isOwner = isAuthenticated && user?.sub === c.userSub;
-        const isEditing = editingId === c._id;
-
-        return (
-            <div className={`comment-item${isReply ? ' reply' : ''}`} key={c._id}>
-                <img
-                    className="comment-avatar"
-                    src={c.picture}
-                    alt=""
-                    referrerPolicy="no-referrer"
-                    onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(c.username || "User")}&background=0D8ABC&color=fff`;
-                    }}
-                />
-                <div className="comment-body">
-                    <div className="comment-meta">
-                        <span className="comment-username">{c.username}</span>
-                        <span className="comment-time">
-                            {new Date(c.createdAt).toLocaleString()}
-                            {c.editedAt && <em> · edited</em>}
-                        </span>
-                    </div>
-
-                    {isEditing ? (
-                        <div className="comment-edit-box">
-                            <textarea
-                                className="comment"
-                                value={editText}
-                                onChange={(e) => setEditText(e.target.value)}
-                                rows={4}
-                                maxLength={1000}
-                            ></textarea>
-                            {editError && <div className="comment-error">{editError}</div>}
-                            <div className="comment-edit-actions">
-                                <button className="comment-action-btn save" onClick={() => saveEdit(c._id)} disabled={!editText.trim()}>Save</button>
-                                <button className="comment-action-btn" onClick={cancelEdit}>Cancel</button>
-                            </div>
-                        </div>
-                    ) : (
-                        <>
-                            <div className="comment-text">{c.text}</div>
-                            {(isOwner || (!isReply && isAuthenticated)) && (
-                                <div className="comment-owner-actions">
-                                    {!isReply && isAuthenticated && (
-                                        <button className="comment-action-btn" onClick={() => startReply(c._id)}>Reply</button>
-                                    )}
-                                    {isOwner && (
-                                        <>
-                                            <button className="comment-action-btn" onClick={() => startEdit(c)}>Edit</button>
-                                            <button className="comment-action-btn danger" onClick={() => setDeleteTarget(c._id)}>Delete</button>
-                                        </>
-                                    )}
-                                </div>
-                            )}
-                        </>
-                    )}
-
-                    {!isReply && replyingTo === c._id && (
-                        <div className="comment-reply-composer">
-                            <CommentComposer
-                                value={replyText}
-                                onChange={setReplyText}
-                                onSubmit={() => postReply(c._id)}
-                                submitting={submittingReply}
-                                placeholder={`Reply to ${c.username}...`}
-                                autoFocus
-                            />
-                            {replyError && <div className="comment-error">{replyError}</div>}
-                            <button className="comment-action-btn" onClick={cancelReply}>Cancel</button>
-                        </div>
-                    )}
-                </div>
-            </div>
-        );
-    };
 
     return (
         <div className="comment-section">
@@ -306,23 +346,25 @@ export default function Comments({ itemId, itemType }) {
             ) : (
                 <div className="comment-list">
                     {topLevelComments.map((c) => (
-                        <div key={c._id}>
-                            {renderCommentBody(c)}
-                            {repliesFor(c._id).length > 0 && (
-                                <div className="comment-replies">
-                                    {repliesFor(c._id).map((r) => renderCommentBody(r, { isReply: true }))}
-                                </div>
-                            )}
-                        </div>
+                        <CommentItem
+                            key={c._id}
+                            comment={c}
+                            replies={repliesFor(c._id)}
+                            currentUserSub={user?.sub}
+                            isAuthenticated={isAuthenticated}
+                            onSubmitReply={submitReply}
+                            onSubmitEdit={submitEdit}
+                            onRequestDelete={setDeleteTarget}
+                        />
                     ))}
                 </div>
             )}
 
-            {deleteTarget && (
+            {deleteTarget && createPortal(
                 <div className="comment-modal-overlay" onClick={() => !deleting && setDeleteTarget(null)}>
                     <div className="comment-modal" onClick={(e) => e.stopPropagation()}>
                         <div className="comment-modal-title">Delete this comment?</div>
-                        <div className="comment-modal-text">This can't be undone.</div>
+                        <div className="comment-modal-text">This can't be undone. Any replies will be deleted too.</div>
                         <div className="comment-modal-actions">
                             <button className="comment-modal-btn cancel" onClick={() => setDeleteTarget(null)} disabled={deleting}>Cancel</button>
                             <button className="comment-modal-btn confirm" onClick={confirmDelete} disabled={deleting}>
@@ -330,7 +372,8 @@ export default function Comments({ itemId, itemType }) {
                             </button>
                         </div>
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
         </div>
     );
