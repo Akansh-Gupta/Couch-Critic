@@ -9,6 +9,7 @@ import './style/navbar.css';
 import './style/search.css';
 import './style/single_result.css';
 import './style/watch_later.css';
+import './style/profile.css';
 
 import {
   BrowserRouter as Router,
@@ -34,6 +35,7 @@ import AuthCallback from './components/AuthCallback';
 import Loading from './components/Loading';
 import CheckEmail from './components/CheckEmail';
 import WatchLater from './components/WatchLater';
+import Profile from './components/Profile';
 
 function AppContent() {
   const { progress } = useGlobalContext();
@@ -65,6 +67,7 @@ function AppContent() {
         <Route path='/:type/:id/:name' element={<SingleResult />} />
         <Route path='/:type/genres/:genre' element={<Genre />} />
         <Route path="/watch-later" element={<WatchLater />} />
+        <Route path="/profile" element={<Profile />} />
         <Route path='*' element={<PageNotFound />} />
       </Routes>
     </>
