@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react'
 import axios from 'axios';
 import { useCallback, useEffect } from 'react';
@@ -57,6 +58,7 @@ export default function Login() {
                                     : user?.email?.split("@")[0]
                             )}
                         </li>
+                        <li><Link to="/profile" className="loginbtn" style={{ display: 'block', textAlign: 'center', textDecoration: 'none' }}>View Profile</Link></li>
                         <li><button className='loginbtn' onClick={() => logout({ returnTo: window.location.origin })}>Logout <IoIosLogOut size={20} /></button> </li>
                     </ul>
                 </div>
