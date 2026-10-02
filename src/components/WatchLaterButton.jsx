@@ -1,24 +1,24 @@
-import React from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
 import { useGlobalContext } from './Context';
 
 export default function WatchLaterButton({ item }) {
-    const { watchLaterList, toggleWatchLater } = useGlobalContext();
-    const added = watchLaterList.some(i => i.ids?.simkl_id === item.ids?.simkl_id);
+    const { isAuthenticated, loginWithRedirect } = useAuth0();
+    const { watchLater, toggleWatchLater } = useGlobalContext();
+    const added = watchLater.some(w => w.simklId === item?.ids?.simkl);
 
-    const handleClick = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
+    const handleClick = () => {
+        if (!isAuthenticated) {
+            localStorage.setItem("auth_return_to", window.location.pathname.replace(/^\/Couch-Critic/, "") || "/movie");
+            loginWithRedirect();
+            return;
+        }
         toggleWatchLater(item);
     };
 
     return (
-        <button
-            className={`bookmark-btn${added ? ' added' : ''}`}
-            onClick={handleClick}
-            aria-label={added ? "Remove from Watch Later" : "Add to Watch Later"}
-        >
-            <svg className="bookmark-icon" viewBox="0 0 24 32" xmlns="http://www.w3.org/2000/svg">
-                <path d="M2 2 L2 30 L12 22 L22 30 L22 2 Z" />
+        <button className={`bookmark-btn ${added ? 'added' : ''}`} onClick={handleClick} aria-label="Watch later">
+            <svg className="bookmark-icon" viewBox="0 0 24 24">
+                <path d="M6 2h12a1 1 0 0 1 1 1v19l-7-4-7 4V3a1 1 0 0 1 1-1z" />
             </svg>
         </button>
     );

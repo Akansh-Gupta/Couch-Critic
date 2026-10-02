@@ -1,11 +1,12 @@
-import React, { useCallback, useContext, useState, useRef } from "react";
+import React, { useCallback, useContext, useState, useRef, useEffect } from "react";
+import { useAuth0 } from "@auth0/auth0-react";
 import axios from "axios";
 const AppContext = React.createContext();
 const simklUrl = `https://api.simkl.com/search/`;
-// const tmdb_key = import.meta.env.VITE_TMDB_API_KEY;
 const simklKeys = [
     import.meta.env.VITE_SIMKL_CLIENT_ID_1
 ];
+const API = import.meta.env.VITE_API_URL || "http://localhost:4000";
 
 const fetchWithRotatingKeys = async (url) => {
     for (let i = 0; i < simklKeys.length; i++) {
@@ -55,6 +56,9 @@ const AppProvider = ({ children }) => {
     const [query, setQuery] = useState("");
     const [progress, setProgress] = useState(0);
 
+    const { isAuthenticated, getAccessTokenSilently } = useAuth0();
+    const [watchLater, setWatchLater] = useState([]);
+
     const [watchLaterList, setWatchLaterList] = useState(() => {
         try {
             return JSON.parse(localStorage.getItem('watchLaterList')) || [];
@@ -68,20 +72,38 @@ const AppProvider = ({ children }) => {
     const airingCache = useRef({});   // cache for fetchAiringInformation   
     const upcomingCache = useRef({});   // cache for fetchUpcomingInformation   
 
+    useEffect(() => {
+        if (!isAuthenticated) { setWatchLater([]); return; }
+        (async () => {
+            try {
+                const token = await getAccessTokenSilently();
+                const res = await axios.get(`${API}/watchlater`, { headers: { Authorization: `Bearer ${token}` } });
+                setWatchLater(res.data);
+            } catch (e) { console.error(e); }
+        })();
+    }, [isAuthenticated, getAccessTokenSilently]);
+
     const setLoadingProgress = useCallback((progress) => {
         setProgress(progress);
     }, []);
 
-    const toggleWatchLater = useCallback((item) => {
-        setWatchLaterList(prev => {
-            const exists = prev.some(i => i.ids?.simkl_id === item.ids?.simkl_id);
-            const updated = exists
-                ? prev.filter(i => i.ids?.simkl_id !== item.ids?.simkl_id)
-                : [...prev, item];
-            localStorage.setItem('watchLaterList', JSON.stringify(updated));
-            return updated;
-        });
-    }, []);
+    const toggleWatchLater = useCallback(async (item) => {
+        const id = item.ids?.simkl;
+        if (!id) return;
+        const exists = watchLater.some(w => w.simklId === id);
+        try {
+            const token = await getAccessTokenSilently();
+            const headers = { Authorization: `Bearer ${token}` };
+            if (exists) {
+                await axios.delete(`${API}/watchlater/${id}`, { headers });
+                setWatchLater(prev => prev.filter(w => w.simklId !== id));
+            } else {
+                const doc = { simklId: id, item };
+                await axios.post(`${API}/watchlater`, doc, { headers });
+                setWatchLater(prev => [...prev, doc]);
+            }
+        } catch (e) { console.error(e); }
+    }, [watchLater, getAccessTokenSilently]);
 
     const fetchInformation = useCallback(async (type, query = "", genre = "") => {
         genre = genre === "documentary" ? "documentaries" : genre;
@@ -242,6 +264,9 @@ const AppProvider = ({ children }) => {
     //This is the return of the AppProvider component
     return (
         <AppContext.Provider value={{
+            watchLater,
+            toggleWatchLater,
+
             isError,
             query,
             progress,

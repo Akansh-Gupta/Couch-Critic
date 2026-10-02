@@ -1,14 +1,19 @@
-import React from 'react'
-import { useGlobalContext } from './Context'
-import RenderList from './RenderList'
+import { useGlobalContext } from './Context';
+import RenderList from './RenderList';
 
 export default function WatchLater() {
-    const { watchLaterList } = useGlobalContext();
-
+    const { watchLater } = useGlobalContext();
     return (
-        <div className='search-result-background'>
+        <div className="search-result-background">
             <div className="heading">Watch Later :</div>
-            <RenderList list={watchLaterList} noResult={true} compact={false} showMore={false} watchLater={true} />
+            <RenderList
+                list={watchLater.map(w => w.item)}
+                noResult={true}
+                type="items"
+                compact={false}
+                showMore={false}
+                watchLater={true}
+            />
         </div>
-    )
+    );
 }

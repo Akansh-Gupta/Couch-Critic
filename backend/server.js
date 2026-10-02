@@ -52,57 +52,97 @@ app.get('/protected', jwtCheck, async (req, res) => {
             { upsert: true }
         );
 
-        // res.send({ username, picture, email, role: 'USER' });
-        // res.send(userInfo)
+        res.sendStatus(204);
     } catch (error) {
         console.error('Error fetching or storing user info:', error.message);
         res.status(500).send({ error: 'Internal Server Error' });
     }
-    app.get('/users/me', jwtCheck, async (req, res) => {
-        try {
-            const db = getDb();
-            const sub = req.auth.payload.sub;
-            const user = await db.collection('users').findOne(
-                { sub },
-                { projection: { _id: 0, username: 1, email: 1, picture: 1, createdAt: 1 } }
-            );
-            if (!user) return res.status(404).send({ error: 'User not found' });
-            res.json(user);
-        } catch (error) {
-            console.error('Error fetching user profile:', error.message);
-            res.status(500).send({ error: 'Internal Server Error' });
+});
+app.get('/users/me', jwtCheck, async (req, res) => {
+    try {
+        const db = getDb();
+        const sub = req.auth.payload.sub;
+        const user = await db.collection('users').findOne(
+            { sub },
+            { projection: { _id: 0, username: 1, email: 1, picture: 1, createdAt: 1 } }
+        );
+        if (!user) return res.status(404).send({ error: 'User not found' });
+        res.json(user);
+    } catch (error) {
+        console.error('Error fetching user profile:', error.message);
+        res.status(500).send({ error: 'Internal Server Error' });
+    }
+});
+
+app.patch('/users/me', jwtCheck, async (req, res) => {
+    try {
+        const db = getDb();
+        const sub = req.auth.payload.sub;
+        const { username } = req.body;
+
+        if (!username || !username.trim()) {
+            return res.status(400).send({ error: 'username is required' });
         }
-    });
-
-    app.patch('/users/me', jwtCheck, async (req, res) => {
-        try {
-            const db = getDb();
-            const sub = req.auth.payload.sub;
-            const { username } = req.body;
-
-            if (!username || !username.trim()) {
-                return res.status(400).send({ error: 'username is required' });
-            }
-            const trimmed = username.trim();
-            if (trimmed.length > 20) {
-                return res.status(400).send({ error: 'Username must be 20 characters or fewer' });
-            }
-
-            await db.collection('users').updateOne(
-                { sub },
-                { $set: { username: trimmed } }
-            );
-
-            const updated = await db.collection('users').findOne(
-                { sub },
-                { projection: { _id: 0, username: 1, email: 1, picture: 1, createdAt: 1 } }
-            );
-            res.json(updated);
-        } catch (error) {
-            console.error('Error updating user profile:', error.message);
-            res.status(500).send({ error: 'Internal Server Error' });
+        const trimmed = username.trim();
+        if (trimmed.length > 20) {
+            return res.status(400).send({ error: 'Username must be 20 characters or fewer' });
         }
-    });
+
+        await db.collection('users').updateOne(
+            { sub },
+            { $set: { username: trimmed } }
+        );
+
+        const updated = await db.collection('users').findOne(
+            { sub },
+            { projection: { _id: 0, username: 1, email: 1, picture: 1, createdAt: 1 } }
+        );
+        res.json(updated);
+    } catch (error) {
+        console.error('Error updating user profile:', error.message);
+        res.status(500).send({ error: 'Internal Server Error' });
+    }
+});
+
+app.get('/watchlater', jwtCheck, async (req, res) => {
+    try {
+        const sub = req.auth.payload.sub;
+        const list = await getDb().collection('watchlater').find({ sub }).toArray();
+        res.json(list);
+    } catch (error) {
+        console.error('Error fetching watch later:', error.message);
+        res.status(500).send({ error: 'Internal Server Error' });
+    }
+});
+
+app.post('/watchlater', jwtCheck, async (req, res) => {
+    try {
+        const sub = req.auth.payload.sub;
+        const { simklId, item } = req.body;
+        if (!simklId || !item) {
+            return res.status(400).send({ error: 'simklId and item are required' });
+        }
+        await getDb().collection('watchlater').updateOne(
+            { sub, simklId },
+            { $set: { sub, simklId, item } },
+            { upsert: true }
+        );
+        res.sendStatus(204);
+    } catch (error) {
+        console.error('Error saving watch later:', error.message);
+        res.status(500).send({ error: 'Internal Server Error' });
+    }
+});
+
+app.delete('/watchlater/:simklId', jwtCheck, async (req, res) => {
+    try {
+        const sub = req.auth.payload.sub;
+        await getDb().collection('watchlater').deleteOne({ sub, simklId: Number(req.params.simklId) });
+        res.sendStatus(204);
+    } catch (error) {
+        console.error('Error removing watch later:', error.message);
+        res.status(500).send({ error: 'Internal Server Error' });
+    }
 });
 
 app.get('/comments/:type/:id', async (req, res) => {
