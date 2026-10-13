@@ -14,7 +14,7 @@ const jwtCheck = auth({
     tokenSigningAlg: 'RS256'
 });
 
-app.use(cors());
+app.use(cors({ origin: ['https://akansh-gupta.github.io', 'http://localhost:5173'] }));
 app.use(express.json());
 
 app.get('/', (req, res) => {
@@ -267,7 +267,8 @@ app.delete('/comments/:id', jwtCheck, async (req, res) => {
 
 connectToMongoDB()
     .then(() => {
-        app.listen(4000, () => console.log('Server running on port 4000'));
+        const PORT = process.env.PORT || 4000;
+        app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
     })
     .catch((err) => {
         console.error('MongoDB connection failed:', err);
