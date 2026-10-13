@@ -1,70 +1,175 @@
-# Getting Started with Create React App
+# Couch Critic
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A movie, TV show and anime discovery app with user accounts, comments and a personal Watch Later list.
 
-## Available Scripts
+**Live site:** https://akansh-gupta.github.io/Couch-Critic/
 
-In the project directory, you can run:
+## Features
 
-### `npm start`
+- Browse trending, premiering, airing today and upcoming titles for Movies, TV Shows and Anime
+- Search each category and filter by genre
+- Detail pages with trailer, ratings, cast info, related titles and recommendations
+- Login with Auth0 (email/password or Google)
+- Profile page with an editable username
+- Comments on every title (add, edit, delete)
+- Watch Later list saved per account
+- Responsive layout for desktop and mobile
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Tech Stack
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+| Layer | Technology |
+| --- | --- |
+| Frontend | React 18, Vite 7, React Router 6, Bootstrap 5, react-slick |
+| Auth | Auth0 (`@auth0/auth0-react`, `express-oauth2-jwt-bearer`) |
+| Backend | Node.js, Express 5 |
+| Database | MongoDB Atlas |
+| Data source | [Simkl API](https://simkl.docs.apiary.io/) |
+| Hosting | GitHub Pages (frontend), Render (backend) |
 
-### `npm test`
+## Project Structure
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```
+Couch-Critic/
+├── backend/
+│   ├── mongodb.js        # MongoDB connection
+│   ├── server.js         # Express API
+│   └── package.json
+├── public/
+│   └── 404.html          # SPA redirect for GitHub Pages
+├── src/
+│   ├── api.js            # Backend base URL
+│   ├── components/       # Pages and UI components
+│   ├── style/            # CSS files
+│   ├── App.jsx           # Routes
+│   └── main.jsx          # Auth0 provider and app entry
+├── index.html
+├── vite.config.mjs
+└── package.json
+```
 
-### `npm run build`
+## Getting Started
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Prerequisites
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- Node.js 22 LTS (Vite 7 requires 20.19+ or 22.12+)
+- A MongoDB Atlas cluster
+- An Auth0 application and API
+- A Simkl API client ID
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 1. Clone and install
 
-### `npm run eject`
+```bash
+git clone https://github.com/Akansh-Gupta/Couch-Critic.git
+cd Couch-Critic
+npm install
+cd backend
+npm install
+cd ..
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### 2. Environment variables
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Create `.env.local` in the project root:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```env
+VITE_AUTH0_DOMAIN=your-tenant.us.auth0.com
+VITE_AUTH0_CLIENT_ID=your_auth0_client_id
+VITE_SIMKL_CLIENT_ID_1=your_simkl_client_id
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+`VITE_API_URL` is optional. Without it the frontend uses `http://localhost:4000`.
 
-## Learn More
+Create `backend/.env`:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```env
+MONGO_URL=your_mongodb_atlas_connection_string
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### 3. Run locally
 
-### Code Splitting
+```bash
+npm run dev
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+This starts the frontend (Vite) and the backend (nodemon on port 4000) together. Open the URL printed by Vite, which includes the `/Couch-Critic/` base path.
 
-### Analyzing the Bundle Size
+## Scripts
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Run frontend and backend together |
+| `npm start` | Run the frontend only |
+| `npm run build` | Build the frontend into `dist` |
+| `npm run preview` | Preview the production build |
+| `npm run deploy` | Build and publish `dist` to the `gh-pages` branch |
 
-### Making a Progressive Web App
+## API Endpoints
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+Routes marked with a lock require an Auth0 access token in the `Authorization: Bearer` header.
 
-### Advanced Configuration
+| Method | Route | Auth | Description |
+| --- | --- | --- | --- |
+| GET | `/` | | Health check |
+| GET | `/protected` | 🔒 | Sync the logged-in user to MongoDB |
+| GET | `/users/me` | 🔒 | Get the current user's profile |
+| PATCH | `/users/me` | 🔒 | Update the username |
+| GET | `/watchlater` | 🔒 | Get the user's Watch Later list |
+| POST | `/watchlater` | 🔒 | Add a title |
+| DELETE | `/watchlater/:simklId` | 🔒 | Remove a title |
+| GET | `/comments/:type/:id` | | Get comments for a title |
+| POST | `/comments` | 🔒 | Add a comment |
+| PATCH | `/comments/:id` | 🔒 | Edit a comment |
+| DELETE | `/comments/:id` | 🔒 | Delete a comment |
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## Deployment
 
-### Deployment
+### Backend (Render)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+1. Create a new **Web Service** from this repo.
+2. Set **Root Directory** to `backend`, **Build Command** to `npm install`, and **Start Command** to `node server.js`.
+3. Add environment variables: `MONGO_URL` and `NODE_VERSION=22`.
+4. In MongoDB Atlas, allow Render's access under **Network Access** (`0.0.0.0/0` on the free tier).
+5. Add your frontend origin to the `cors` list in `backend/server.js`.
 
-### `npm run build` fails to minify
+The free tier sleeps after inactivity, so the first request can take up to a minute.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### Frontend (GitHub Pages)
+
+1. Create `.env.production` in the project root (do not commit it):
+
+   ```env
+   VITE_API_URL=https://your-backend.onrender.com
+   VITE_AUTH0_DOMAIN=your-tenant.us.auth0.com
+   VITE_AUTH0_CLIENT_ID=your_auth0_client_id
+   VITE_SIMKL_CLIENT_ID_1=your_simkl_client_id
+   ```
+
+2. Run:
+
+   ```bash
+   npm run deploy
+   ```
+
+3. In the repo, go to **Settings → Pages** and set the source to the `gh-pages` branch, `/ (root)`.
+
+Vite reads `VITE_*` variables at build time, so rebuild and redeploy after changing them.
+
+### Auth0 settings
+
+In your Auth0 application settings, add:
+
+- **Allowed Callback URLs:** `https://akansh-gupta.github.io/Couch-Critic/callback`, `http://localhost:5173/Couch-Critic/callback`
+- **Allowed Logout URLs:** `https://akansh-gupta.github.io/Couch-Critic/movie`, `http://localhost:5173/Couch-Critic/movie`
+- **Allowed Web Origins** and **Allowed Origins (CORS):** `https://akansh-gupta.github.io`, `http://localhost:5173`
+
+For production, replace Auth0's development keys for the Google connection with your own Google OAuth client ID and secret.
+
+## Notes
+
+- Routing uses the `/Couch-Critic/` base path. `public/404.html` and the script in `index.html` redirect deep links on GitHub Pages.
+- Watch Later items are stored in the `watchlater` collection, keyed by the Auth0 user ID, so each account has its own list.
+- The Simkl client ID is embedded in the frontend bundle, as with any client-side API key.
+
+## License
+
+This project is for learning and personal use.
