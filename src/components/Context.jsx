@@ -6,7 +6,7 @@ const simklUrl = `https://api.simkl.com/search/`;
 const simklKeys = [
     import.meta.env.VITE_SIMKL_CLIENT_ID_1
 ];
-const API = import.meta.env.VITE_API_URL || "http://localhost:4000";
+import { API } from '../api';
 
 const fetchWithRotatingKeys = async (url) => {
     for (let i = 0; i < simklKeys.length; i++) {

@@ -4,14 +4,14 @@ import axios from 'axios';
 import { useCallback, useEffect } from 'react';
 import { IoIosLogIn, IoIosLogOut } from "react-icons/io";
 
+import { API } from '../api';
 
 export default function Login() {
     const { loginWithRedirect, logout, isAuthenticated, user, getAccessTokenSilently } = useAuth0();
     const getToken = useCallback(async () => {
         try {
             const token = await getAccessTokenSilently();
-            // console.log("Access Token:", token);
-            const response = await axios.get('http://localhost:4000/protected', {
+            const response = await axios.get(`${API}/protected`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -59,7 +59,7 @@ export default function Login() {
                             )}
                         </li>
                         <li><Link to="/profile" className="loginbtn" style={{ display: 'block', textAlign: 'center', textDecoration: 'none' }}>View Profile</Link></li>
-                        <li><button className='loginbtn' onClick={() => logout({ returnTo: window.location.origin })}>Logout <IoIosLogOut size={20} /></button> </li>
+                        <li><button className='loginbtn' onClick={() => logout({ logoutParams: { returnTo: window.location.origin + '/Couch-Critic/' } })}>Logout <IoIosLogOut size={20} /></button> </li>
                     </ul>
                 </div>
                 :

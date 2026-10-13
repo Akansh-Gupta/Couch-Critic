@@ -236,7 +236,7 @@ export default function Comments({ itemId, itemType }) {
         if (!itemType || !itemId) return;
         setLoading(true);
         try {
-            const res = await axios.get(`http://localhost:4000/comments/${itemType}/${itemId}`);
+            const res = await axios.get(`${API}/comments/${itemType}/${itemId}`);
             setComments(res.data);
         } catch (err) {
             console.error('Failed to load comments:', err.message);
@@ -255,7 +255,7 @@ export default function Comments({ itemId, itemType }) {
         setError('');
         try {
             const token = await getAccessTokenSilently();
-            const res = await axios.post('http://localhost:4000/comments', {
+            const res = await axios.post(`${API}/comments`, {
                 itemId, itemType, text: text.trim()
             }, {
                 headers: { Authorization: `Bearer ${token}` }
@@ -272,7 +272,7 @@ export default function Comments({ itemId, itemType }) {
 
     const submitReply = async (parentId, replyText) => {
         const token = await getAccessTokenSilently();
-        const res = await axios.post('http://localhost:4000/comments', {
+        const res = await axios.post(`${API}/comments`, {
             itemId, itemType, text: replyText.trim(), parentId
         }, {
             headers: { Authorization: `Bearer ${token}` }
@@ -282,7 +282,7 @@ export default function Comments({ itemId, itemType }) {
 
     const submitEdit = async (id, newText) => {
         const token = await getAccessTokenSilently();
-        const res = await axios.patch(`http://localhost:4000/comments/${id}`, {
+        const res = await axios.patch(`${API}/comments/${id}`, {
             text: newText.trim()
         }, {
             headers: { Authorization: `Bearer ${token}` }
@@ -295,7 +295,7 @@ export default function Comments({ itemId, itemType }) {
         setDeleting(true);
         try {
             const token = await getAccessTokenSilently();
-            await axios.delete(`http://localhost:4000/comments/${deleteTarget}`, {
+            await axios.delete(`${API}/comments/${deleteTarget}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setComments(prev => prev.filter(c => c._id !== deleteTarget && c.parentId !== deleteTarget));
