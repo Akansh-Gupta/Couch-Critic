@@ -4,7 +4,8 @@ import { useGlobalContext } from './Context';
 export default function WatchLaterButton({ item }) {
     const { isAuthenticated, loginWithRedirect } = useAuth0();
     const { watchLater, toggleWatchLater } = useGlobalContext();
-    const added = watchLater.some(w => w.simklId === item?.ids?.simkl);
+    const id = Number(item?.ids?.simkl_id ?? item?.ids?.simkl);
+    const added = watchLater.some(w => w.simklId === id);
 
     const handleClick = () => {
         if (!isAuthenticated) {

@@ -59,14 +59,6 @@ const AppProvider = ({ children }) => {
     const { isAuthenticated, getAccessTokenSilently } = useAuth0();
     const [watchLater, setWatchLater] = useState([]);
 
-    const [watchLaterList, setWatchLaterList] = useState(() => {
-        try {
-            return JSON.parse(localStorage.getItem('watchLaterList')) || [];
-        } catch {
-            return [];
-        }
-    });
-
     const searchCache = useRef({});     // cache for fetchInformation
     const trendingCache = useRef({});   // cache for fetchTrendingInformation   
     const airingCache = useRef({});   // cache for fetchAiringInformation   
@@ -88,7 +80,7 @@ const AppProvider = ({ children }) => {
     }, []);
 
     const toggleWatchLater = useCallback(async (item) => {
-        const id = item.ids?.simkl;
+        const id = Number(item.ids?.simkl_id ?? item.ids?.simkl);
         if (!id) return;
         const exists = watchLater.some(w => w.simklId === id);
         try {
@@ -296,9 +288,6 @@ const AppProvider = ({ children }) => {
             fetchTrendingInformation,
             fetchAiringInformation,
             fetchUpcomingInformation,
-
-            watchLaterList,
-            toggleWatchLater,
 
             // fetchAnime
             // fetchMovieAndTv
