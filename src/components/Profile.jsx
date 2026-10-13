@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import axios from 'axios';
 import { FaPen, FaCheck, FaTimes } from 'react-icons/fa';
+import { API } from '../api';
 
 export default function Profile() {
     const { user, isAuthenticated, getAccessTokenSilently, loginWithRedirect } = useAuth0();

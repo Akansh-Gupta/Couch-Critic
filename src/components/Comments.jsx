@@ -3,6 +3,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { FaPaperPlane } from 'react-icons/fa';
 import { createPortal } from 'react-dom';
 import axios from 'axios';
+import { API } from '../api';
 
 const VISIBLE_REPLIES = 2;
 
