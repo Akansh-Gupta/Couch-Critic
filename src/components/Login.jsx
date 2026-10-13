@@ -54,7 +54,7 @@ export default function Login() {
                             </Link>
                         </li>
                         <li>
-                            <button className="user-menu-item user-menu-logout" onClick={() => logout({ logoutParams: { returnTo: window.location.origin + '/Couch-Critic/' } })}>
+                            <button className="user-menu-item user-menu-logout" onClick={() => logout({ logoutParams: { returnTo: window.location.origin + '/Couch-Critic/movie' } })}>
                                 <IoIosLogOut size={20} /> Logout
                             </button>
                         </li>
@@ -64,7 +64,7 @@ export default function Login() {
                 <button className="loginbtn" onClick={() => {
                     const returnTo = window.location.pathname.replace(/^\/Couch-Critic/, "") || "/movie";
                     localStorage.setItem("auth_return_to", returnTo);
-                    loginWithRedirect();
+                    loginWithRedirect({ authorizationParams: { prompt: 'select_account' } });
                 }}>Login <IoIosLogIn size={20} /></button>
             )}
         </>
