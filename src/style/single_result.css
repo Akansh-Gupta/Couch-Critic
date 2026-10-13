@@ -288,9 +288,23 @@
     flex-shrink: 0;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 860px) {
+    .related-list {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.5rem;
+        padding: 0 0.5rem;
+    }
+
     .related-list .card-wrapper {
-        width: clamp(100px, 42vw, 140px);
+        width: 100%;
+        margin: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .related-list {
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
@@ -300,11 +314,6 @@
     }
 }
 
-@media (max-width: 860px) {
-    .related-list .card-wrapper {
-        width: clamp(110px, 28vw, 160px);
-    }
-}
 
 /* Mobile layout: stack poster below info */
 @media (max-width: 1023px) {
@@ -315,7 +324,18 @@
         width: 100%;
     }
 
-    .movie-poster {
-        order: -1;
+        .movie-poster {
+        order: 1;
+    }
+
+    .movie-info {
+        order: 2;
+    }
+
+    .comment-section,
+    .related-vid,
+    .related-info,
+    .single-result-container .load-more-wrapper {
+        order: 3;
     }
 }
