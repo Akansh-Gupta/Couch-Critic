@@ -16,7 +16,7 @@ export default function Profile() {
     const fetchProfile = useCallback(async () => {
         try {
             const token = await getAccessTokenSilently();
-            const res = await axios.get(`${API}/protected`, {
+            const res = await axios.get(`${API}/users/me`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setProfile(res.data);
@@ -41,7 +41,7 @@ export default function Profile() {
         try {
             const token = await getAccessTokenSilently();
             const res = await axios.patch(
-                `${API}/protected`,
+                `${API}/users/me`,
                 { username: usernameInput.trim() },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
